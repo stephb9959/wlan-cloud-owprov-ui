@@ -1,5 +1,5 @@
 {
-  "name": "ow-prov",
+  "name": "ow-prov", 
   "version": "0.9.13",
   "dependencies": {
     "@coreui/coreui": "^3.4.0",
