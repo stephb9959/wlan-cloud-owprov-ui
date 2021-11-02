@@ -14,7 +14,7 @@ const TheLayout = () => {
       <Sidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
-        logo="assets/Arilia_Small.png"
+        logo="assets/Arilia_Large.png"
         redirectTo="/entity/0000-0000-0000"
       />
       <div className="c-wrapper">
@@ -25,7 +25,7 @@ const TheLayout = () => {
           t={t}
           i18n={i18n}
           logout={logout}
-          logo="assets/Arilia_Small.png"
+          logo="assets/Arilia_Large.png"
           authToken={currentToken}
           endpoints={endpoints}
           user={user}
