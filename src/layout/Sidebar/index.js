@@ -41,11 +41,13 @@ const Sidebar = ({ showSidebar, setShowSidebar, logo, redirectTo }) => {
       <CSidebarBrand className="d-md-down-none" to={redirectTo}>
         <img
           className={[styles.sidebarImgFull, 'c-sidebar-brand-full'].join(' ')}
+          style={{ height: '90px' }}
           src={logo}
           alt="OpenWifi"
         />
         <img
           className={[styles.sidebarImgMinimized, 'c-sidebar-brand-minimized'].join(' ')}
+          style={{ height: '90px' }}
           src={logo}
           alt="OpenWifi"
         />
