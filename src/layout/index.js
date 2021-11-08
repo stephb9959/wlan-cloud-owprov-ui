@@ -21,6 +21,7 @@ const TheLayout = () => {
         setShowSidebar={setShowSidebar}
         logo="assets/Small_Logo.png"
         redirectTo="/entity/0000-0000-0000"
+        logoWidth="90px"
       />
       <div className="c-wrapper">
         <Header
