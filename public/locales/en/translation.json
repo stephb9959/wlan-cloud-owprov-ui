@@ -316,6 +316,7 @@
 		"delete_warning": "Warning: this operation cannot be reverted",
 		"edit_failure": "Update unsuccessful : {{error}}",
 		"enter_here": "Enter the IP(s) you'd like to add here",
+		"entire_tree": "Site Map",
 		"entities": "Entities",
 		"entity": "Entity",
 		"error_fetch_entity": "Error while fetching entity information",
@@ -358,6 +359,7 @@
 		"latest_version_installed": "Latest Version Installed",
 		"newer_firmware_available": "Newer Revisions Available",
 		"reinstall_latest": "Reinstall ",
+		"release": "Release",
 		"revision": "Revision",
 		"show_dev": "Show Dev Releases",
 		"size": "Size",
@@ -465,7 +467,7 @@
 		"unassigned_tags": "Unassigned tags",
 		"validating_import_file": "Validating import file and data...",
 		"venue": "Venue",
-		"view_in_gateway": "View in Gateway"
+		"view_in_gateway": "Details in Gateway"
 	},
 	"location": {
 		"add": "Add Location",
