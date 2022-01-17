@@ -16,6 +16,7 @@ import CIcon from '@coreui/icons-react';
 import { cilPencil, cilSave, cilX } from '@coreui/icons';
 import { DetailedNotesTable } from 'ucentral-libs';
 import EditUserForm from './Form';
+import SubscriberInventory from './SubscriberInventory';
 
 const EditUserModal = ({
   t,
@@ -29,6 +30,8 @@ const EditUserModal = ({
   toggleEditing,
   toggle,
   addNote,
+  serialNumbers,
+  setSerialNumbers,
 }) => {
   const [index, setIndex] = useState(0);
 
@@ -92,6 +95,16 @@ const EditUserModal = ({
             active={index === 1}
             onClick={() => setIndex(1)}
           >
+            {serialNumbers.length === 1
+              ? t('subscriber.devices_one', { count: serialNumbers.length })
+              : t('subscriber.devices_other', { count: serialNumbers.length })}
+          </CNavLink>
+          <CNavLink
+            className="font-weight-bold"
+            href="#"
+            active={index === 2}
+            onClick={() => setIndex(2)}
+          >
             {t('configuration.notes')}
           </CNavLink>
         </CNav>
@@ -109,6 +122,16 @@ const EditUserModal = ({
           </CTabPane>
           <CTabPane active={index === 1}>
             {index === 1 ? (
+              <SubscriberInventory
+                serialNumbers={serialNumbers}
+                setSerialNumbers={setSerialNumbers}
+                loading={loading}
+                editable={editing}
+              />
+            ) : null}
+          </CTabPane>
+          <CTabPane active={index === 2}>
+            {index === 2 ? (
               <DetailedNotesTable
                 t={t}
                 notes={fields.notes.value}
@@ -136,6 +159,8 @@ EditUserModal.propTypes = {
   toggleEditing: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
   addNote: PropTypes.func.isRequired,
+  serialNumbers: PropTypes.instanceOf(Array).isRequired,
+  setSerialNumbers: PropTypes.func.isRequired,
 };
 
 export default React.memo(EditUserModal);
