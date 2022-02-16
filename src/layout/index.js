@@ -18,7 +18,7 @@ const TheLayout = () => {
       <Sidebar
         showSidebar={showSidebar}
         setShowSidebar={setShowSidebar}
-        logo="assets/Arilia_Large.png"
+        logo="assets/OpenWiFi_LogoLockup_WhiteColour.svg"
         redirectTo="/entity/0000-0000-0000"
       />
       <div className="c-wrapper">
