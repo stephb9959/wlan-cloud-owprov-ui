@@ -64,7 +64,7 @@ const Sidebar = ({ routes, isOpen, toggle }) => {
       >
         <img
           src={colorMode === 'light' ? lightLogo : darkLogo}
-          alt="OpenWifi"
+          alt="Logo"
           width="180px"
           height="100px"
         />
