@@ -7,7 +7,6 @@ import LoadingOverlay from 'components/LoadingOverlay';
 import RefreshButton from 'components/Buttons/RefreshButton';
 import VenueAnalyticsHeader from './Header';
 import VenueDashboardTableModal from './TableModal';
-import CirclePackTest from './CirclePackTest';
 
 const propTypes = {
   boardId: PropTypes.string.isRequired,
@@ -18,8 +17,11 @@ const VenueDashboard = ({ boardId }) => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure(false);
   const [tableOptions, setTableOptions] = useState(null);
-
   const { data: devices, isFetching, refetch } = useGetAnalyticsBoardDevices({ t, toast, id: boardId });
+
+  const handleRefreshClick = () => {
+    refetch();
+  };
 
   const openModal = (newOptions) => {
     setTableOptions(newOptions);
@@ -62,9 +64,9 @@ const VenueDashboard = ({ boardId }) => {
         if (finalData.deviceTypeTotals[device.deviceType]) finalData.deviceTypeTotals[device.deviceType] += 1;
         else finalData.deviceTypeTotals[device.deviceType] = 1;
 
-        if (device.associations_2g > 0) finalData.twoGAssocations += device.associations_2g;
-        if (device.associations_5g > 0) finalData.fiveGAssocations += device.associations_2g;
-        if (device.associations_6g > 0) finalData.sixGAssocations += device.associations_2g;
+        if (device.associations_2g > 0) finalData.twoGAssociations += device.associations_2g;
+        if (device.associations_5g > 0) finalData.fiveGAssociations += device.associations_5g;
+        if (device.associations_6g > 0) finalData.sixGAssociations += device.associations_6g;
 
         if (device.connected) finalData.connectedDevices += 1;
         else finalData.disconnectedDevices += 1;
@@ -122,10 +124,9 @@ const VenueDashboard = ({ boardId }) => {
             onOpen={onOpen}
             onClose={onClose}
           />
-          <RefreshButton onClick={refetch} isLoading={isFetching} ml={2} />
+          <RefreshButton onClick={handleRefreshClick} isLoading={isFetching} ml={2} />
         </Flex>
         <VenueAnalyticsHeader data={parsedData} openModal={openModal} />
-        <CirclePackTest />
       </Box>
     </LoadingOverlay>
   );
