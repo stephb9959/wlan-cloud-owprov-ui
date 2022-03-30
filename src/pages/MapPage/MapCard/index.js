@@ -45,11 +45,14 @@ const MapCard = () => {
     queryClient.invalidateQueries(['get-venues']);
   };
 
-  useEffect(async () => {
-    if (tree && entities && venues) {
-      const newData = await createListOfEntitiesVenues();
-      setGroupedData(newData);
-    }
+  useEffect(() => {
+    const createGroupedData = async () => {
+      if (tree && entities && venues) {
+        const newData = await createListOfEntitiesVenues();
+        setGroupedData(newData);
+      }
+    };
+    createGroupedData();
   }, [tree, entities, venues]);
 
   return <MapDisplayCard data={groupedData} isLoading={isLoading} refreshData={refreshData} />;
