@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { animated } from '@react-spring/web';
 import {
-  Box,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -11,16 +10,14 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Portal,
+  Text,
   Table,
   Tbody,
   Td,
-  Text,
-  Th,
-  Thead,
   Tr,
+  Box,
 } from '@chakra-ui/react';
-import { WifiHigh } from 'phosphor-react';
-import { bytesString } from 'utils/stringHelper';
+import { Radio } from 'phosphor-react';
 import { useTranslation } from 'react-i18next';
 import { useCircleGraph } from 'contexts/CircleGraphProvider';
 
@@ -32,7 +29,7 @@ const propTypes = {
   style: PropTypes.instanceOf(Object).isRequired,
 };
 
-const AssociationCircle = ({ node, style, handleClicks }) => {
+const RadioCircle = ({ node, style, handleClicks }) => {
   const { t } = useTranslation();
   const { popoverRef } = useCircleGraph();
 
@@ -44,8 +41,8 @@ const AssociationCircle = ({ node, style, handleClicks }) => {
           cx={style.x}
           cy={style.y}
           r={style.radius}
-          fill={node.fill}
-          stroke="black"
+          fill={node.data.details.color}
+          stroke="blue"
           cursor="pointer"
           strokeWidth="1px"
           opacity={style.opacity}
@@ -57,46 +54,42 @@ const AssociationCircle = ({ node, style, handleClicks }) => {
           <PopoverArrow />
           <PopoverCloseButton alignContent="center" mt={1} />
           <PopoverHeader display="flex">
-            <WifiHigh weight="bold" size={24} />
-            <Text ml={2}>
-              {node?.data?.name.split('/')[0]} ({node.data.details.rssi} db)
+            <Radio size={24} weight="fill" />
+            <Text ml={2} mt="2px">
+              {node.data.details.band}G
             </Text>
           </PopoverHeader>
-          <PopoverBody px={0}>
+          <PopoverBody>
             <Box px={0} fontWeight="bold">
               <Table variant="simple" size="sm">
-                <Thead>
-                  <Tr>
-                    <Th />
-                    <Th>TX</Th>
-                    <Th>RX</Th>
-                  </Tr>
-                </Thead>
                 <Tbody>
                   <Tr>
-                    <Td>{t('analytics.total_data')}</Td>
-                    <Td>{bytesString(node.data.details.tx_bytes)}</Td>
-                    <Td>{bytesString(node.data.details.rx_bytes)}</Td>
+                    <Td w="100px">{t('analytics.channel')}</Td>
+                    <Td>{node.data.details.channel}</Td>
                   </Tr>
                   <Tr>
-                    <Td>{t('analytics.bandwidth')}</Td>
-                    <Td>{bytesString(node.data.details.tx_bytes_bw)}</Td>
-                    <Td>{bytesString(node.data.details.rx_bytes_bw)}</Td>
+                    <Td w="100px">{t('analytics.noise')}</Td>
+                    <Td>{node.data.details.noise} db</Td>
                   </Tr>
                   <Tr>
-                    <Td>{t('analytics.packets')} /s</Td>
-                    <Td>{node.data.details.tx_packets_bw.toLocaleString('en-US')}</Td>
-                    <Td>{node.data.details.rx_packets_bw.toLocaleString('en-US')}</Td>
+                    <Td w="100px">{t('analytics.airtime')}</Td>
+                    <Td>{node.data.details.transmitPct.toFixed(2)}%</Td>
                   </Tr>
                   <Tr>
-                    <Td>MCS</Td>
-                    <Td>{node.data.details.tx_rate.mcs}</Td>
-                    <Td>{node.data.details.rx_rate.mcs}</Td>
+                    <Td w="100px">{t('analytics.active')}</Td>
+                    <Td>{node.data.details.active_pct.toFixed(2)}%</Td>
                   </Tr>
                   <Tr>
-                    <Td>NSS</Td>
-                    <Td>{node.data.details.tx_rate.nss}</Td>
-                    <Td>{node.data.details.rx_rate.nss}</Td>
+                    <Td w="100px">{t('analytics.busy')}</Td>
+                    <Td>{node.data.details.busy_pct.toFixed(2)}%</Td>
+                  </Tr>
+                  <Tr>
+                    <Td w="100px">{t('analytics.receive')}</Td>
+                    <Td>{node.data.details.receive_pct.toFixed(2)}%</Td>
+                  </Tr>
+                  <Tr>
+                    <Td w="100px">{t('analytics.temperature')}</Td>
+                    <Td>{node.data.details.temperature}&#8451;</Td>
                   </Tr>
                 </Tbody>
               </Table>
@@ -108,5 +101,5 @@ const AssociationCircle = ({ node, style, handleClicks }) => {
   );
 };
 
-AssociationCircle.propTypes = propTypes;
-export default React.memo(AssociationCircle);
+RadioCircle.propTypes = propTypes;
+export default React.memo(RadioCircle);
