@@ -42,7 +42,8 @@ const RadioCircle = ({ node, style, handleClicks }) => {
           cy={style.y}
           r={style.radius}
           fill={node.data.details.color}
-          stroke="black"
+          stroke="blue"
+          cursor="pointer"
           strokeWidth="1px"
           opacity={style.opacity}
           onClick={handleClicks.onClick}
@@ -62,6 +63,10 @@ const RadioCircle = ({ node, style, handleClicks }) => {
             <Box px={0} fontWeight="bold">
               <Table variant="simple" size="sm">
                 <Tbody>
+                  <Tr>
+                    <Td w="100px">{t('analytics.noise')}</Td>
+                    <Td>{node.data.details.noise} db</Td>
+                  </Tr>
                   <Tr>
                     <Td w="100px">{t('analytics.channel')}</Td>
                     <Td>{node.data.details.channel}</Td>

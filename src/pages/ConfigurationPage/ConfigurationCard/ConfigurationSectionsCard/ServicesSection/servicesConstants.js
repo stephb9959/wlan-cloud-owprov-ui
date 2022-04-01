@@ -59,8 +59,15 @@ export const SERVICES_LLDP_SCHEMA = (t, useDefault = false) => {
 export const SERVICES_SSH_SCHEMA = (t, useDefault = false) => {
   const shape = object().shape({
     port: number().required(t('form.required')).moreThan(-1).lessThan(65535).integer().default(22),
-    'authorized-keys': array().of(string()).required(t('form.required')).min(1, t('form.required')).default([]),
-    'password-authentication': bool().default(false),
+    'password-authentication': bool().default(true),
+    'authorized-keys': array()
+      .of(string())
+      .when('password-authentication', {
+        is: false,
+        then: array().of(string()).required(t('form.required')).min(1, t('form.required')).default([]),
+        otherwise: array().of(string()),
+      })
+      .default(undefined),
   });
 
   return useDefault ? shape : shape.nullable().default(undefined);
@@ -237,7 +244,6 @@ export const SERVICES_SCHEMA = (t, useDefault = false) =>
     description: string().default(''),
     weight: number().required(t('form.required')).moreThan(-1).integer().default(1),
     configuration: object().shape({
-      __selected_subcategories: array().of(string()).default([]),
       lldp: SERVICES_LLDP_SCHEMA(t, useDefault),
       ssh: SERVICES_SSH_SCHEMA(t, useDefault),
       ntp: SERVICES_NTP_SCHEMA(t, useDefault),

@@ -7,6 +7,20 @@ export const CREATE_INTERFACE_SCHEMA = (t) =>
     role: string().required(t('form.required')).default('upstream'),
   });
 
+export const INTERFACE_SSID_RATE_LIMIT_SCHEMA = (t, useDefault = false) => {
+  const shape = object()
+    .shape({
+      'ingress-rate': number().required(t('form.required')).moreThan(-1).lessThan(65535).integer().default(0),
+      'egress-rate': number().required(t('form.required')).moreThan(-1).lessThan(65535).integer().default(0),
+    })
+    .default({
+      'ingress-rate': 0,
+      'egress-rate': 0,
+    });
+
+  return useDefault ? shape : shape.nullable().default(undefined);
+};
+
 export const INTERFACE_SSID_RADIUS_LOCAL_USER_SCHEMA = (t, useDefault = false) => {
   const shape = object().shape({
     mac: string()
@@ -93,10 +107,9 @@ export const INTERFACE_SSID_ENCRYPTION_SCHEMA = (t, useDefault = false) => {
       proto: string().required(t('form.required')).default('psk'),
       ieee80211w: string().required(t('form.required')).default('disabled'),
       key: string()
-        .when('proto', {
-          is: (v) => keyProtos.includes(v),
-          then: string().required(t('form.required')).min(8).max(63).default(''),
-          otherwise: string().nullable(),
+        .test('encryptionKeyTest', t('form.min_max_string', { min: 8, max: 63 }), (v, { from }) => {
+          if (!keyProtos.includes(from[0].value.proto) || from[1].value.radius !== undefined) return true;
+          return v.length >= 8 && v.length <= 63;
         })
         .default(''),
     })
@@ -115,15 +128,13 @@ export const INTERFACE_SSID_ROAMING_SCHEMA = (t, useDefault = false) => {
       'message-exchange': string().required(t('form.required')).default('ds'),
       'generate-psk': bool().required(t('form.required')).default(false),
       'domain-identifier': string().required(t('form.required')).default(''),
-      'pmk-r0-key-holder': string().required(t('form.required')).default(''),
-      'pmk-r1-key-holder': string().required(t('form.required')).default(''),
+      'pmk-r0-key-holder': string().default(undefined),
+      'pmk-r1-key-holder': string().default(undefined),
     })
     .default({
       'message-exchange': 'ds',
       'generate-psk': false,
       'domain-identifier': '',
-      'pmk-r0-key-holder': '',
-      'pmk-r1-key-holder': '',
     });
 
   return useDefault ? shape : shape.nullable().default(undefined);
@@ -166,6 +177,7 @@ export const INTERFACE_SSID_SCHEMA = (t, useDefault = false) => {
     'disassoc-low-ack': bool().default(undefined),
     'vendor-elements': string(),
     encryption: INTERFACE_SSID_ENCRYPTION_SCHEMA(t, useDefault),
+    'rate-limit': INTERFACE_SSID_RATE_LIMIT_SCHEMA(t),
     rrm: INTERFACE_SSID_RRM_SCHEMA(t),
     roaming: INTERFACE_SSID_ROAMING_SCHEMA(t),
     radius: INTERFACE_SSID_RADIUS_SCHEMA(t),

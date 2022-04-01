@@ -14,16 +14,19 @@ import LockedRadius from './LockedRadius';
 const propTypes = {
   editing: PropTypes.bool.isRequired,
   namePrefix: PropTypes.string.isRequired,
+  encryptionKeyName: PropTypes.string.isRequired,
 };
 
-const Radius = ({ editing, namePrefix }) => {
+const Radius = ({ editing, namePrefix, encryptionKeyName }) => {
   const { t } = useTranslation();
   const { values, setFieldValue } = useFormikContext();
 
   const onRadiusEnabled = (e) => {
     if (e.target.checked) {
+      setFieldValue(`${encryptionKeyName}`, undefined);
       setFieldValue(`${namePrefix}`, INTERFACE_SSID_RADIUS_SCHEMA(t, true).cast());
     } else {
+      setFieldValue(`${encryptionKeyName}`, 'YOUR_SECRET');
       setFieldValue(`${namePrefix}`, undefined);
     }
   };
@@ -194,13 +197,13 @@ const Radius = ({ editing, namePrefix }) => {
           <SimpleGrid minChildWidth="300px" spacing="20px">
             <StringField
               name={`${namePrefix}.nas-identifier`}
-              label="radius.nas-identifier"
+              label="nas-identifier"
               isDisabled={!editing}
               emptyIsUndefined
             />
             <ToggleField
               name={`${namePrefix}.chargeable-user-id`}
-              label="radius.chargeable-user-id"
+              label="chargeable-user-id"
               isDisabled={!editing}
               falseIsUndefined
             />

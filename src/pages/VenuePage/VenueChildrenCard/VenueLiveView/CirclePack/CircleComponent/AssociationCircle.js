@@ -20,7 +20,7 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import { WifiHigh } from 'phosphor-react';
-import { bytesString } from 'utils/stringHelper';
+import { bytesString, formatNumberToScientificBasedOnMax } from 'utils/stringHelper';
 import { useTranslation } from 'react-i18next';
 import { useCircleGraph } from 'contexts/CircleGraphProvider';
 
@@ -44,8 +44,9 @@ const AssociationCircle = ({ node, style, handleClicks }) => {
           cx={style.x}
           cy={style.y}
           r={style.radius}
-          fill={node.data.details.color}
+          fill={node.fill}
           stroke="black"
+          cursor="pointer"
           strokeWidth="1px"
           opacity={style.opacity}
           onClick={handleClicks.onClick}
@@ -78,14 +79,14 @@ const AssociationCircle = ({ node, style, handleClicks }) => {
                     <Td>{bytesString(node.data.details.rx_bytes)}</Td>
                   </Tr>
                   <Tr>
-                    <Td>{t('analytics.bandwidth')} /s</Td>
+                    <Td>{t('analytics.bandwidth')}</Td>
                     <Td>{bytesString(node.data.details.tx_bytes_bw)}</Td>
                     <Td>{bytesString(node.data.details.rx_bytes_bw)}</Td>
                   </Tr>
                   <Tr>
                     <Td>{t('analytics.packets')} /s</Td>
-                    <Td>{node.data.details.tx_packets_bw.toLocaleString('en-US')}</Td>
-                    <Td>{node.data.details.rx_packets_bw.toLocaleString('en-US')}</Td>
+                    <Td>{formatNumberToScientificBasedOnMax(node.data.details.tx_packets_bw)}</Td>
+                    <Td>{formatNumberToScientificBasedOnMax(node.data.details.rx_packets_bw)}</Td>
                   </Tr>
                   <Tr>
                     <Td>MCS</Td>
