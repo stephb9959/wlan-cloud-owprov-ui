@@ -12,7 +12,7 @@ import VenueConfigurationsTableWrapper from './VenueConfigurationsTableWrapper';
 import VenueChildrenTableWrapper from './VenueChildrenTableWrapper';
 import VenueContactTableWrapper from './VenueContactTableWrapper';
 import VenueDashboard from './VenueDashboard';
-import VenueLiveView from './VenueLiveView';
+import VenueLiveViewNew from './VenueLiveView_New';
 
 const propTypes = {
   id: PropTypes.string.isRequired,
@@ -32,7 +32,7 @@ const VenueChildrenCard = ({ id }) => {
             <VenueDashboard boardId={venue.boards[0]} />
           </TabPanel>
           <TabPanel overflowX="auto">
-            <VenueLiveView boardId={venue.boards[0]} />
+            <VenueLiveViewNew boardId={venue.boards[0]} />
           </TabPanel>
           <TabPanel overflowX="auto">
             <VenueChildrenTableWrapper venue={venue} />
