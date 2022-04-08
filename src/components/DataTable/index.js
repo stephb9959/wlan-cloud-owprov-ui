@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
   Table,
   Tbody,
@@ -56,6 +56,7 @@ const propTypes = {
   minHeight: PropTypes.string,
   fullScreen: PropTypes.bool,
   isManual: PropTypes.bool,
+  saveSettingsId: PropTypes.string,
 };
 
 const defaultProps = {
@@ -68,6 +69,7 @@ const defaultProps = {
   hiddenColumns: [],
   hideControls: false,
   isManual: false,
+  saveSettingsId: null,
 };
 
 const DataTable = ({
@@ -83,11 +85,17 @@ const DataTable = ({
   count,
   setPageInfo,
   isManual,
+  saveSettingsId,
 }) => {
   const { t } = useTranslation();
   const breakpoint = useBreakpoint();
   const textColor = useColorModeValue('gray.700', 'white');
-  const [queryPageSize, setQueryPageSize] = useState(10);
+  const getPageSize = () => {
+    const saved = localStorage.getItem(saveSettingsId);
+    if (saved) return Number.parseInt(saved, 10);
+    return 10;
+  };
+  const [queryPageSize, setQueryPageSize] = useState(getPageSize());
 
   // Use the state and functions returned from useTable to build your UI
   const {
@@ -110,7 +118,7 @@ const DataTable = ({
     {
       columns,
       data,
-      initialState: { sortBy, pagination: !hideControls },
+      initialState: { sortBy, pagination: !hideControls, pageSize: queryPageSize },
       manualPagination: isManual,
       pageCount: isManual ? Math.ceil(count / queryPageSize) : null,
     },
@@ -119,11 +127,11 @@ const DataTable = ({
   );
 
   useEffect(() => {
-    if (setPageInfo && pageIndex !== undefined)
-      setPageInfo({ index: pageIndex, limit: queryPageSize });
+    if (setPageInfo && pageIndex !== undefined) setPageInfo({ index: pageIndex, limit: queryPageSize });
   }, [queryPageSize, pageIndex]);
 
   useEffect(() => {
+    if (saveSettingsId) localStorage.setItem(saveSettingsId, pageSize);
     setQueryPageSize(pageSize);
   }, [pageSize]);
 
@@ -133,13 +141,7 @@ const DataTable = ({
 
   // If this is a manual DataTable, with a page index that is higher than 0 and higher than the max possible page, we send to index 0
   useEffect(() => {
-    if (
-      isManual &&
-      data &&
-      isManual &&
-      pageIndex > 0 &&
-      Math.ceil(count / queryPageSize) - 1 < pageIndex
-    ) {
+    if (isManual && data && isManual && pageIndex > 0 && Math.ceil(count / queryPageSize) - 1 < pageIndex) {
       gotoPage(0);
       setPageInfo({ index: 0, limit: queryPageSize });
     }
@@ -165,10 +167,10 @@ const DataTable = ({
           <Table {...getTableProps()} size="small" textColor={textColor} w="100%">
             <Thead fontSize="14px">
               {headerGroups.map((group) => (
-                <Tr {...group.getHeaderGroupProps()} key={createUuid()}>
+                <Tr {...group.getHeaderGroupProps()} key={uuid()}>
                   {group.headers.map((column) => (
                     <Th
-                      key={createUuid()}
+                      key={uuid()}
                       color="gray.400"
                       {...column.getHeaderProps()}
                       minWidth={column.customMinWidth ?? null}
@@ -196,10 +198,10 @@ const DataTable = ({
                 {page.map((row) => {
                   prepareRow(row);
                   return (
-                    <Tr {...row.getRowProps()} key={createUuid()}>
+                    <Tr {...row.getRowProps()} key={uuid()}>
                       {row.cells.map((cell) => (
                         <Td
-                          key={createUuid()}
+                          key={uuid()}
                           px={1}
                           minWidth={cell.column.customMinWidth ?? null}
                           maxWidth={cell.column.customMaxWidth ?? null}
@@ -239,11 +241,7 @@ const DataTable = ({
               />
             </Tooltip>
             <Tooltip label={t('table.previous_page')}>
-              <IconButton
-                onClick={previousPage}
-                isDisabled={!canPreviousPage}
-                icon={<ChevronLeftIcon h={6} w={6} />}
-              />
+              <IconButton onClick={previousPage} isDisabled={!canPreviousPage} icon={<ChevronLeftIcon h={6} w={6} />} />
             </Tooltip>
           </Flex>
 
@@ -289,7 +287,7 @@ const DataTable = ({
               }}
             >
               {[10, 20, 30, 40, 50].map((opt) => (
-                <option key={createUuid()} value={opt}>
+                <option key={uuid()} value={opt}>
                   {t('common.show')} {opt}
                 </option>
               ))}
@@ -298,11 +296,7 @@ const DataTable = ({
 
           <Flex>
             <Tooltip label={t('table.next_page')}>
-              <IconButton
-                onClick={nextPage}
-                isDisabled={!canNextPage}
-                icon={<ChevronRightIcon h={6} w={6} />}
-              />
+              <IconButton onClick={nextPage} isDisabled={!canNextPage} icon={<ChevronRightIcon h={6} w={6} />} />
             </Tooltip>
             <Tooltip label={t('table.last_page')}>
               <IconButton

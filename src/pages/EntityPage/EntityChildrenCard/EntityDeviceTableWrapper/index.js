@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { EntityShape } from 'constants/propShapes';
 import InventoryTable from 'components/Tables/InventoryTable';
 import { Box, useDisclosure, useToast } from '@chakra-ui/react';
@@ -10,6 +10,7 @@ import { useQueryClient } from 'react-query';
 import EditTagModal from 'components/Tables/InventoryTable/EditTagModal';
 import ConfigurationPushModal from 'components/Tables/InventoryTable/ConfigurationPushModal';
 import CreateTagModal from 'components/Tables/InventoryTable/CreateTagModal';
+import ImportDeviceCsvModal from 'components/Tables/InventoryTable/ImportDeviceCsvModal';
 import Actions from './Actions';
 
 const propTypes = {
@@ -36,21 +37,15 @@ const EntityDeviceTableWrapper = ({ entity }) => {
   const refetchTags = () => setRefreshId(refreshId + 1);
 
   const actions = useCallback(
-    (cell) => (
-      <Actions
-        key={createUuid()}
-        cell={cell.row}
-        refreshEntity={refreshEntity}
-        openEditModal={openEditModal}
-      />
-    ),
+    (cell) => <Actions key={uuid()} cell={cell.row} refreshEntity={refreshEntity} openEditModal={openEditModal} />,
     [refreshId],
   );
 
   return (
     <>
       <Box textAlign="right" mb={2}>
-        <CreateTagModal refresh={refreshEntity} entityId={`entity:${entity.id}`} />
+        <ImportDeviceCsvModal refresh={refreshEntity} parent={{ entity: entity.id }} deviceClass="entity" />
+        <CreateTagModal refresh={refreshEntity} entityId={`entity:${entity.id}`} deviceClass="entity" />
       </Box>
       <InventoryTable
         tagSelect={entity.devices}
@@ -65,11 +60,7 @@ const EntityDeviceTableWrapper = ({ entity }) => {
         refresh={refetchTags}
         pushConfig={pushConfiguration}
       />
-      <ConfigurationPushModal
-        isOpen={isPushOpen}
-        onClose={closePush}
-        pushResult={pushConfiguration.data}
-      />
+      <ConfigurationPushModal isOpen={isPushOpen} onClose={closePush} pushResult={pushConfiguration.data} />
     </>
   );
 };

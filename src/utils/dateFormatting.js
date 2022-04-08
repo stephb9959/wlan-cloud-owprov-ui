@@ -22,24 +22,23 @@ export const compactDate = (dateString) => {
   if (!dateString || dateString === null) return '-';
   const convertedTimestamp = unixToDateString(dateString);
   const date = new Date(convertedTimestamp);
-  return `${date.getFullYear()}-${twoDigitNumber(date.getMonth() + 1)}-${twoDigitNumber(
-    date.getDate(),
-  )}
-  ${twoDigitNumber(date.getHours())}:${twoDigitNumber(date.getMinutes())}:${twoDigitNumber(
-    date.getSeconds(),
-  )}`;
+  return `${date.getFullYear()}-${twoDigitNumber(date.getMonth() + 1)}-${twoDigitNumber(date.getDate())}
+  ${twoDigitNumber(date.getHours())}:${twoDigitNumber(date.getMinutes())}:${twoDigitNumber(date.getSeconds())}`;
 };
 
 export const formatDaysAgo = (d1, d2 = new Date()) => {
-  const convertedTimestamp = unixToDateString(d1);
-  const date = new Date(convertedTimestamp);
-  const elapsed = date - d2;
+  try {
+    const convertedTimestamp = unixToDateString(d1);
+    const date = new Date(convertedTimestamp);
+    const elapsed = date - d2;
 
-  for (const [key] of Object.entries(UNITS))
-    if (Math.abs(elapsed) > UNITS[key] || key === 'second')
-      return RTF.format(Math.round(elapsed / UNITS[key]), key);
+    for (const [key] of Object.entries(UNITS))
+      if (Math.abs(elapsed) > UNITS[key] || key === 'second') return RTF.format(Math.round(elapsed / UNITS[key]), key);
 
-  return compactDate(date);
+    return compactDate(date);
+  } catch {
+    return '-';
+  }
 };
 
 export const compactSecondsToDetailed = (seconds, t) => {
@@ -55,12 +54,36 @@ export const compactSecondsToDetailed = (seconds, t) => {
   let finalString = '';
 
   finalString =
-    days === 1
-      ? `${finalString}${days} ${t('common.day')}, `
-      : `${finalString}${days} ${t('common.days')}, `;
+    days === 1 ? `${finalString}${days} ${t('common.day')}, ` : `${finalString}${days} ${t('common.days')}, `;
   finalString = `${finalString}${twoDigitNumber(hours)}:`;
   finalString = `${finalString}${twoDigitNumber(minutes)}:`;
   finalString = `${finalString}${twoDigitNumber(secondsLeft)}`;
 
   return finalString;
+};
+
+export const minimalSecondsToDetailed = (seconds, t) => {
+  if (!seconds || seconds === 0) return `0 ${t('common.seconds')}`;
+  let secondsLeft = seconds;
+  const days = Math.floor(secondsLeft / (3600 * 24));
+  secondsLeft -= days * (3600 * 24);
+  const hours = Math.floor(secondsLeft / 3600);
+  secondsLeft -= hours * 3600;
+  const minutes = Math.floor(secondsLeft / 60);
+  secondsLeft -= minutes * 60;
+
+  let finalString = '';
+
+  finalString = `${finalString}${twoDigitNumber(days)}:`;
+  finalString = `${finalString}${twoDigitNumber(hours)}:`;
+  finalString = `${finalString}${twoDigitNumber(minutes)}:`;
+  finalString = `${finalString}${twoDigitNumber(secondsLeft)}`;
+
+  return finalString;
+};
+
+export const getHoursAgo = (hoursAgo = 1, date = new Date()) => {
+  const newDate = date;
+  newDate.setHours(date.getHours() - hoursAgo);
+  return newDate;
 };

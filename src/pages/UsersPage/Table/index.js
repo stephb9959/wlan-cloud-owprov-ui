@@ -6,7 +6,7 @@ import CardHeader from 'components/Card/CardHeader';
 import CardBody from 'components/Card/CardBody';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Box, Button, Flex, Heading, useDisclosure, useToast } from '@chakra-ui/react';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import FormattedDate from 'components/FormattedDate';
 import { ArrowsClockwise } from 'phosphor-react';
 import { useAuth } from 'contexts/AuthProvider';
@@ -34,11 +34,7 @@ const UserTable = ({ title }) => {
   const [editId, setEditId] = useState('');
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const { isOpen: editOpen, onOpen: openEdit, onClose: closeEdit } = useDisclosure();
-  const {
-    data: users,
-    refetch: refreshUsers,
-    isFetching,
-  } = useGetUsers({ t, toast, setUsersWithAvatars });
+  const { data: users, refetch: refreshUsers, isFetching } = useGetUsers({ t, toast, setUsersWithAvatars });
 
   const openEditModal = (userId) => {
     setEditId(userId);
@@ -46,20 +42,10 @@ const UserTable = ({ title }) => {
   };
 
   const memoizedActions = useCallback(
-    (cell) => (
-      <UserActions
-        cell={cell.row}
-        refreshTable={refreshUsers}
-        key={createUuid()}
-        openEdit={openEditModal}
-      />
-    ),
+    (cell) => <UserActions cell={cell.row} refreshTable={refreshUsers} key={uuid()} openEdit={openEditModal} />,
     [],
   );
-  const memoizedDate = useCallback(
-    (cell) => <FormattedDate date={cell.row.values.lastLogin} key={createUuid()} />,
-    [],
-  );
+  const memoizedDate = useCallback((cell) => <FormattedDate date={cell.row.values.lastLogin} key={uuid()} />, []);
 
   const memoizedAvatar = useCallback(
     (cell) => <Avatar name={cell.row.values.name} src={cell.row.original.avatar} />,

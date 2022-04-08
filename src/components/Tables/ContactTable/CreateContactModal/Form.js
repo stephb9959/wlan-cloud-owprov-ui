@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useToast, SimpleGrid } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { CreateContactSchema } from 'constants/formSchemas';
@@ -26,7 +26,7 @@ const propTypes = {
 const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const { data: entities } = useGetEntities({ t, toast });
   const { data: venues } = useGetVenues({ t, toast });
   const queryClient = useQueryClient();
@@ -34,7 +34,7 @@ const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
   const create = useCreateContact();
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   return (
@@ -94,10 +94,8 @@ const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
             phones,
             description,
             accessPIN,
-            entity:
-              entity === '' || entity.split(':')[0] !== 'ent' ? undefined : entity.split(':')[1],
-            venue:
-              entity === '' || entity.split(':')[0] !== 'ven' ? undefined : entity.split(':')[1],
+            entity: entity === '' || entity.split(':')[0] !== 'ent' ? undefined : entity.split(':')[1],
+            venue: entity === '' || entity.split(':')[0] !== 'ven' ? undefined : entity.split(':')[1],
             notes: note.length > 0 ? [{ note }] : undefined,
           },
           {
@@ -122,7 +120,7 @@ const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
             },
             onError: (e) => {
               toast({
-                id: createUuid(),
+                id: uuid(),
                 title: t('common.error'),
                 description: t('crud.error_create_obj', {
                   obj: t('contacts.one'),
@@ -142,13 +140,7 @@ const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
       {({ errors, touched, setFieldValue }) => (
         <Form>
           <SimpleGrid minChildWidth="300px" spacing="20px" mb={8}>
-            <StringField
-              name="name"
-              label={t('contacts.visual')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
+            <StringField name="name" label={t('contacts.visual')} errors={errors} touched={touched} isRequired />
             <SelectField
               name="type"
               label={t('common.type')}
@@ -207,12 +199,7 @@ const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
                 { value: 'Dr.', label: 'Dr.' },
               ]}
             />
-            <StringField
-              name="title"
-              label={t('contacts.title')}
-              errors={errors}
-              touched={touched}
-            />
+            <StringField name="title" label={t('contacts.title')} errors={errors} touched={touched} />
             <StringField
               name="firstname"
               label={t('contacts.first_name')}
@@ -220,24 +207,9 @@ const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
               touched={touched}
               isRequired
             />
-            <StringField
-              name="lastname"
-              label={t('contacts.last_name')}
-              errors={errors}
-              touched={touched}
-            />
-            <StringField
-              name="initials"
-              label={t('contacts.initials')}
-              errors={errors}
-              touched={touched}
-            />
-            <StringField
-              name="description"
-              label={t('common.description')}
-              errors={errors}
-              touched={touched}
-            />
+            <StringField name="lastname" label={t('contacts.last_name')} errors={errors} touched={touched} />
+            <StringField name="initials" label={t('contacts.initials')} errors={errors} touched={touched} />
+            <StringField name="description" label={t('common.description')} errors={errors} touched={touched} />
             <StringField
               name="primaryEmail"
               label={t('contacts.primary_email')}
@@ -267,12 +239,7 @@ const CreateContactForm = ({ isOpen, onClose, refresh, formRef, parent }) => {
               placeholder="+1(202)555-0103"
               setFieldValue={setFieldValue}
             />
-            <StringField
-              name="accessPIN"
-              label={t('contacts.access_pin')}
-              errors={errors}
-              touched={touched}
-            />
+            <StringField name="accessPIN" label={t('contacts.access_pin')} errors={errors} touched={touched} />
             <StringField name="note" label={t('common.note')} errors={errors} touched={touched} />
           </SimpleGrid>
         </Form>

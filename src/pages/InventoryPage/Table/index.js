@@ -17,7 +17,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useGetInventoryCount, useGetInventoryTags, usePushConfig } from 'hooks/Network/Inventory';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import FormattedDate from 'components/FormattedDate';
 import ColumnPicker from 'components/ColumnPicker';
 import EditTagModal from 'components/Tables/InventoryTable/EditTagModal';
@@ -25,6 +25,7 @@ import ConfigurationPushModal from 'components/Tables/InventoryTable/Configurati
 import CreateConfigurationModal from 'components/Tables/InventoryTable/CreateTagModal';
 import EntityCell from 'components/TableCells/EntityCell';
 import RefreshButton from 'components/Buttons/RefreshButton';
+import DeviceSearchBar from 'components/SearchBars/DeviceSearch';
 import Actions from './Actions';
 
 const propTypes = {
@@ -73,32 +74,22 @@ const InventoryTable = ({ title }) => {
   };
 
   const memoizedActions = useCallback(
-    (cell) => (
-      <Actions
-        cell={cell.row}
-        refreshTable={refetchCount}
-        key={createUuid()}
-        openEditModal={openEditModal}
-      />
-    ),
+    (cell) => <Actions cell={cell.row} refreshTable={refetchCount} key={uuid()} openEditModal={openEditModal} />,
     [],
   );
-  const memoizedDate = useCallback(
-    (cell, key) => <FormattedDate date={cell.row.values[key]} key={createUuid()} />,
-    [],
-  );
+  const memoizedDate = useCallback((cell, key) => <FormattedDate date={cell.row.values[key]} key={uuid()} />, []);
 
   const entityCell = useCallback(
     (cell) => (
-      <EntityCell
-        entityName={cell.row.original.extendedInfo?.entity?.name ?? ''}
-        entityId={cell.row.original.entity}
-      />
+      <EntityCell entityName={cell.row.original.extendedInfo?.entity?.name ?? ''} entityId={cell.row.original.entity} />
     ),
     [],
   );
 
-  // Columns array. This array contains your table headings and accessors which maps keys from data array
+  const onSearchClick = useCallback((serialNumber) => {
+    openEditModal({ serialNumber });
+  }, []);
+
   const columns = React.useMemo(() => {
     const baseColumns = [
       {
@@ -190,6 +181,9 @@ const InventoryTable = ({ title }) => {
           <Box>
             <Heading size="md">{title}</Heading>
           </Box>
+          <Box w="300px">
+            <DeviceSearchBar onClick={onSearchClick} />
+          </Box>
           <Flex w="100%" flexDirection="row" alignItems="center">
             <Box ms="auto" display="flex">
               <FormControl display="flex" w="unset" alignItems="center" mr={2}>
@@ -210,22 +204,14 @@ const InventoryTable = ({ title }) => {
                 preference="provisioning.inventoryTable.hiddenColumns"
               />
               <CreateConfigurationModal refresh={refetchCount} />
-              <RefreshButton
-                onClick={refetchCount}
-                isLoading={isFetchingCount || isFetchingTags}
-                ml={2}
-              />
+              <RefreshButton onClick={refetchCount} isLoading={isFetchingCount || isFetchingTags} ml={2} />
             </Box>
           </Flex>
         </CardHeader>
         <CardBody>
           <Box overflowX="auto" w="100%">
             <DataTable
-              columns={
-                onlyUnassigned
-                  ? columns.filter((col) => col.id !== 'entity' && col.id !== 'venue')
-                  : columns
-              }
+              columns={onlyUnassigned ? columns.filter((col) => col.id !== 'entity' && col.id !== 'venue') : columns}
               data={tags ?? []}
               isLoading={isFetchingCount || isFetchingTags}
               isManual
@@ -234,6 +220,7 @@ const InventoryTable = ({ title }) => {
               count={count || 0}
               setPageInfo={setPageInfo}
               fullScreen
+              saveSettingsId="inventory.table"
             />
           </Box>
         </CardBody>
@@ -245,11 +232,7 @@ const InventoryTable = ({ title }) => {
         refresh={refetchTags}
         pushConfig={pushConfiguration}
       />
-      <ConfigurationPushModal
-        isOpen={isPushOpen}
-        onClose={closePush}
-        pushResult={pushConfiguration.data}
-      />
+      <ConfigurationPushModal isOpen={isPushOpen} onClose={closePush} pushResult={pushConfiguration.data} />
     </>
   );
 };

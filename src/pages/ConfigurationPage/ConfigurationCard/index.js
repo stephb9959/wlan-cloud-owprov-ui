@@ -1,18 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
-import {
-  Box,
-  Center,
-  Heading,
-  Spacer,
-  Spinner,
-  useBoolean,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
+import { Box, Center, Heading, Spacer, Spinner, useBoolean, useDisclosure, useToast } from '@chakra-ui/react';
 import CardBody from 'components/Card/CardBody';
 import Card from 'components/Card';
 import CardHeader from 'components/Card/CardHeader';
@@ -72,6 +63,7 @@ const ConfigurationCard = ({ id }) => {
             : form.values.entity.split(':')[1],
         configuration: sections.activeConfigurations.map((conf) => {
           const deviceConfig = sections.data[conf].data.configuration;
+          deviceConfig.__selected_subcategories = undefined;
           const config = { ...sections.data[conf].data, configuration: {} };
           if (conf === 'interfaces') config.configuration = { interfaces: deviceConfig };
           else config.configuration[conf] = deviceConfig;
@@ -97,7 +89,7 @@ const ConfigurationCard = ({ id }) => {
         },
         onError: (e) => {
           toast({
-            id: createUuid(),
+            id: uuid(),
             title: t('common.error'),
             description: t('crud.error_update_obj', {
               obj: t('configurations.one'),
@@ -139,10 +131,7 @@ const ConfigurationCard = ({ id }) => {
               isLoading={updateEntity.isLoading}
               isCompact={false}
               isDisabled={
-                !editing ||
-                !form.isValid ||
-                sections.invalidValues.length > 0 ||
-                (!form.dirty && !sections.isDirty)
+                !editing || !form.isValid || sections.invalidValues.length > 0 || (!form.dirty && !sections.isDirty)
               }
               ml={2}
             />
@@ -153,10 +142,7 @@ const ConfigurationCard = ({ id }) => {
               isDirty={formRef.dirty}
               ml={2}
             />
-            <DeleteConfigurationPopover
-              isDisabled={editing || isFetching}
-              configuration={configuration}
-            />
+            <DeleteConfigurationPopover isDisabled={editing || isFetching} configuration={configuration} />
             <RefreshButton onClick={refetch} isFetching={isFetching} isDisabled={editing} ml={2} />
           </Box>
         </CardHeader>

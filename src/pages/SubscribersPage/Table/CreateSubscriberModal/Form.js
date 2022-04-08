@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
   Box,
   Flex,
@@ -42,7 +42,7 @@ const defaultProps = {
 const CreateSubscriberForm = ({ isOpen, onClose, create, requirements, refresh, formRef }) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const textColor = useColorModeValue('gray.400', 'white');
   const { data: entities } = useGetEntities({ t, toast });
   const [deviceSerials, setDeviceSerials] = useState([]);
@@ -64,7 +64,7 @@ const CreateSubscriberForm = ({ isOpen, onClose, create, requirements, refresh, 
   );
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   const claimDevices = async (devices, userId) => {
@@ -98,10 +98,7 @@ const CreateSubscriberForm = ({ isOpen, onClose, create, requirements, refresh, 
           note: '',
         }}
         validationSchema={CreateSubscriberSchema(t)}
-        onSubmit={async (
-          { name, description, email, currentPassword, note, owner },
-          { setSubmitting, resetForm },
-        ) =>
+        onSubmit={async ({ name, description, email, currentPassword, note, owner }, { setSubmitting, resetForm }) =>
           create.mutateAsync(
             {
               name,
@@ -132,7 +129,7 @@ const CreateSubscriberForm = ({ isOpen, onClose, create, requirements, refresh, 
                 const addResults = await claimDevices(deviceSerials, data.id);
                 if (addResults.length > 0) {
                   toast({
-                    id: createUuid(),
+                    id: uuid(),
                     title: t('common.error'),
                     description: t('subscribers.error_claiming', {
                       serials: addResults.join(', '),
@@ -148,7 +145,7 @@ const CreateSubscriberForm = ({ isOpen, onClose, create, requirements, refresh, 
               },
               onError: (e) => {
                 toast({
-                  id: createUuid(),
+                  id: uuid(),
                   title: t('common.error'),
                   description: t('crud.error_create_obj', {
                     obj: t('user.title'),
@@ -188,7 +185,7 @@ const CreateSubscriberForm = ({ isOpen, onClose, create, requirements, refresh, 
         </Form>
       </Formik>
       <Accordion allowMultiple mt={4}>
-        <AccordionItem key={createUuid()}>
+        <AccordionItem key={uuid()}>
           <AccordionButton>
             <Box flex="1" textAlign="left">
               {t('subscribers.devices_to_claim', { count: deviceSerials.length })}

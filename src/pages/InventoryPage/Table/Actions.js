@@ -22,7 +22,7 @@ import {
 import { ArrowSquareOut, MagnifyingGlass, Trash } from 'phosphor-react';
 import { useMutation } from 'react-query';
 import { axiosProv } from 'utils/axiosInstances';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useGetGatewayUi } from 'hooks/Network/Endpoints';
 
 const deleteApi = async (id) => axiosProv.delete(`/inventory/${id}`).then(() => true);
@@ -49,7 +49,7 @@ const Actions = ({ cell: { original: tag }, refreshTable, openEditModal }) => {
       onClose();
       refreshTable();
       toast({
-        id: `tag-delete-success${createUuid()}`,
+        id: `tag-delete-success${uuid()}`,
         title: t('common.success'),
         description: t('crud.success_delete_obj', {
           obj: tag.name,
@@ -96,20 +96,13 @@ const Actions = ({ cell: { original: tag }, refreshTable, openEditModal }) => {
           <PopoverHeader>
             {t('crud.delete')} {tag.name}
           </PopoverHeader>
-          <PopoverBody px={0}>
-            {t('crud.delete_confirm', { obj: t('inventory.tag_one') })}
-          </PopoverBody>
+          <PopoverBody px={0}>{t('crud.delete_confirm', { obj: t('inventory.tag_one') })}</PopoverBody>
           <PopoverFooter>
             <Center>
               <Button colorScheme="gray" mr="1" onClick={onClose}>
                 {t('common.cancel')}
               </Button>
-              <Button
-                colorScheme="red"
-                ml="1"
-                onClick={handleDeleteClick}
-                isLoading={deleteConfig.isLoading}
-              >
+              <Button colorScheme="red" ml="1" onClick={handleDeleteClick} isLoading={deleteConfig.isLoading}>
                 Yes
               </Button>
             </Center>
@@ -117,13 +110,7 @@ const Actions = ({ cell: { original: tag }, refreshTable, openEditModal }) => {
         </PopoverContent>
       </Popover>
       <Tooltip hasArrow label={t('common.view_details')} placement="top">
-        <IconButton
-          ml={2}
-          colorScheme="blue"
-          icon={<MagnifyingGlass size={20} />}
-          size="sm"
-          onClick={handleOpenEdit}
-        />
+        <IconButton ml={2} colorScheme="blue" icon={<MagnifyingGlass size={20} />} size="sm" onClick={handleOpenEdit} />
       </Tooltip>
       <Tooltip hasArrow label={t('common.view_in_gateway')} placement="top">
         <IconButton

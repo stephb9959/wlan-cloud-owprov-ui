@@ -11,6 +11,7 @@ const propTypes = {
   falseIsUndefined: PropTypes.bool,
   element: PropTypes.node,
   definitionKey: PropTypes.string,
+  onChangeCallback: PropTypes.func,
 };
 
 const defaultProps = {
@@ -19,6 +20,7 @@ const defaultProps = {
   falseIsUndefined: false,
   element: null,
   definitionKey: null,
+  onChangeCallback: null,
 };
 
 const ToggleField = ({
@@ -29,14 +31,19 @@ const ToggleField = ({
   element,
   falseIsUndefined,
   definitionKey,
+  onChangeCallback,
 }) => {
   const [{ value }, { touched, error }, { setValue, setTouched }] = useField(name);
 
-  const onChange = useCallback((e) => {
-    if (falseIsUndefined && !e.target.checked) setValue(undefined);
-    else setValue(e.target.checked);
-    setTouched(true);
-  }, []);
+  const onChange = useCallback(
+    (e) => {
+      if (falseIsUndefined && !e.target.checked) setValue(undefined);
+      else setValue(e.target.checked);
+      setTouched(true);
+      if (onChangeCallback) onChangeCallback(e.target.checked);
+    },
+    [onChangeCallback],
+  );
 
   const onFieldBlur = useCallback(() => {
     setTouched(true);

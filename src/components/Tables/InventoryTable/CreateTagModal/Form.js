@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useToast, SimpleGrid } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { CreateTagSchema } from 'constants/formSchemas';
@@ -22,6 +22,7 @@ const propTypes = {
   configuration: PropTypes.instanceOf(Object),
   deviceTypesList: PropTypes.arrayOf(PropTypes.string).isRequired,
   entityId: PropTypes.string.isRequired,
+  deviceClass: PropTypes.string.isRequired,
   subId: PropTypes.string.isRequired,
 };
 
@@ -39,11 +40,12 @@ const CreateTagForm = ({
   entityId,
   onConfigurationChange,
   configuration,
+  deviceClass,
   subId,
 }) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const { data: entities } = useGetEntities({ t, toast });
   const { data: venues } = useGetVenues({ t, toast });
 
@@ -54,21 +56,12 @@ const CreateTagForm = ({
     return `ven:${splitEntity[1]}`;
   };
 
-  const createParameters = ({
-    serialNumber,
-    name,
-    description,
-    note,
-    deviceType,
-    devClass,
-    rrm,
-    entity,
-  }) => ({
+  const createParameters = ({ serialNumber, name, description, note, deviceType, devClass, rrm, entity }) => ({
     serialNumber,
     name,
     rrm,
     deviceType,
-    devClass,
+    devClass: deviceClass !== '' ? deviceClass : devClass,
     description: description.length > 0 ? description : undefined,
     notes: note.length > 0 ? [{ note }] : undefined,
     entity: entity === '' || entity.split(':')[0] !== 'ent' ? '' : entity.split(':')[1],
@@ -77,7 +70,7 @@ const CreateTagForm = ({
   });
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   return (
@@ -90,7 +83,7 @@ const CreateTagForm = ({
         description: '',
         deviceType: deviceTypesList[0],
         rrm: 'inherit',
-        devClass: 'any',
+        devClass: deviceClass !== '' ? deviceClass : 'any',
         note: '',
         entity: getEntityId(),
       }}
@@ -126,7 +119,7 @@ const CreateTagForm = ({
           },
           onError: (e) => {
             toast({
-              id: createUuid(),
+              id: uuid(),
               title: t('common.error'),
               description: t('crud.error_create_obj', {
                 obj: t('certificates.device'),
@@ -142,98 +135,71 @@ const CreateTagForm = ({
         });
       }}
     >
-      {({ errors, touched, setFieldValue }) => (
-        <Form>
-          <SimpleGrid minChildWidth="300px" spacing="20px" mb={6}>
-            <StringField
-              name="serialNumber"
-              label={t('inventory.serial_number')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
-            <StringField
-              name="name"
-              label={t('common.name')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
-            <SelectField
-              name="deviceType"
-              label={t('inventory.device_type')}
-              errors={errors}
-              touched={touched}
-              options={deviceTypesList.map((deviceType) => ({
-                value: deviceType,
-                label: deviceType,
-              }))}
-              isRequired
-            />
-            <SelectWithSearchField
-              name="entity"
-              label={t('inventory.parent')}
-              errors={errors}
-              touched={touched}
-              options={[
-                { label: t('common.none'), value: '' },
-                {
-                  label: t('entities.title'),
-                  options:
-                    entities?.map((ent) => ({
-                      value: `ent:${ent.id}`,
-                      label: `${ent.name}${ent.description ? `: ${ent.description}` : ''}`,
-                    })) ?? [],
-                },
-                {
-                  label: t('venues.title'),
-                  options:
-                    venues?.map((ven) => ({
-                      value: `ven:${ven.id}`,
-                      label: `${ven.name}${ven.description ? `: ${ven.description}` : ''}`,
-                    })) ?? [],
-                },
-              ]}
-              setFieldValue={setFieldValue}
-              isHidden={entityId !== '' || subId !== ''}
-            />
-            <SelectField
-              name="rrm"
-              label="RRM"
-              errors={errors}
-              touched={touched}
-              options={[
-                { value: 'inherit', label: 'inherit' },
-                { value: 'on', label: 'on' },
-                { value: 'off', label: 'off' },
-              ]}
-              isRequired
-              w={28}
-            />
-            <SelectField
-              name="devClass"
-              label={t('inventory.dev_class')}
-              errors={errors}
-              touched={touched}
-              options={[
-                { value: 'any', label: 'any' },
-                { value: 'entity', label: 'entity' },
-                { value: 'venue', label: 'venue' },
-                { value: 'subscriber', label: 'subscriber' },
-              ]}
-              isRequired
-            />
-            <StringField
-              name="description"
-              label={t('common.description')}
-              errors={errors}
-              touched={touched}
-            />
-            <StringField name="note" label={t('common.note')} errors={errors} touched={touched} />
-          </SimpleGrid>
-          <SpecialConfigurationManager editing onChange={onConfigurationChange} />
-        </Form>
-      )}
+      <Form>
+        <SimpleGrid minChildWidth="300px" spacing="20px" mb={6}>
+          <StringField name="serialNumber" label={t('inventory.serial_number')} isRequired />
+          <StringField name="name" label={t('common.name')} isRequired />
+          <SelectField
+            name="deviceType"
+            label={t('inventory.device_type')}
+            options={deviceTypesList.map((deviceType) => ({
+              value: deviceType,
+              label: deviceType,
+            }))}
+            isRequired
+          />
+          <SelectWithSearchField
+            name="entity"
+            label={t('inventory.parent')}
+            options={[
+              { label: t('common.none'), value: '' },
+              {
+                label: t('entities.title'),
+                options:
+                  entities?.map((ent) => ({
+                    value: `ent:${ent.id}`,
+                    label: `${ent.name}${ent.description ? `: ${ent.description}` : ''}`,
+                  })) ?? [],
+              },
+              {
+                label: t('venues.title'),
+                options:
+                  venues?.map((ven) => ({
+                    value: `ven:${ven.id}`,
+                    label: `${ven.name}${ven.description ? `: ${ven.description}` : ''}`,
+                  })) ?? [],
+              },
+            ]}
+            isHidden={entityId !== '' || subId !== '' || deviceClass === 'subscriber'}
+          />
+          <SelectField
+            name="rrm"
+            label="RRM"
+            options={[
+              { value: 'inherit', label: 'inherit' },
+              { value: 'on', label: 'on' },
+              { value: 'off', label: 'off' },
+            ]}
+            isRequired
+            w={28}
+          />
+          <SelectField
+            name="devClass"
+            label={t('inventory.dev_class')}
+            options={[
+              { value: 'any', label: 'any' },
+              { value: 'entity', label: 'entity' },
+              { value: 'venue', label: 'venue' },
+              { value: 'subscriber', label: 'subscriber' },
+            ]}
+            isRequired
+            isHidden={deviceClass !== ''}
+          />
+          <StringField name="description" label={t('common.description')} />
+          <StringField name="note" label={t('common.note')} />
+        </SimpleGrid>
+        <SpecialConfigurationManager editing onChange={onConfigurationChange} />
+      </Form>
     </Formik>
   );
 };

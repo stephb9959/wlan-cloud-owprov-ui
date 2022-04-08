@@ -12,6 +12,8 @@ import CreatableSelectField from 'components/FormFields/CreatableSelectField';
 import SelectField from 'components/FormFields/SelectField';
 import NumberField from 'components/FormFields/NumberField';
 import ChannelPicker from './ChannelPicker';
+import He from './He';
+import Rates from './Rates';
 
 const propTypes = {
   editing: PropTypes.bool.isRequired,
@@ -28,11 +30,7 @@ const SingleRadio = ({ editing, index, remove }) => {
       <CardHeader flex="auto">
         <Box>#{index} Radio</Box>
         <Spacer />
-        <DeleteButton
-          isDisabled={!editing}
-          onClick={removeRadio}
-          label={t('configurations.delete_radio')}
-        />
+        <DeleteButton isDisabled={!editing} onClick={removeRadio} label={t('configurations.delete_radio')} />
       </CardHeader>
       <CardBody>
         <SimpleGrid minChildWidth="300px" spacing="20px" mb={8} mt={2} w="100%">
@@ -55,6 +53,7 @@ const SingleRadio = ({ editing, index, remove }) => {
             label="bandwidth"
             definitionKey="radio.bandwidth"
             isDisabled={!editing}
+            isInt
             isRequired
             options={[
               { value: 5, label: '5' },
@@ -143,6 +142,29 @@ const SingleRadio = ({ editing, index, remove }) => {
             isDisabled={!editing}
             falseIsUndefined
           />
+          <SelectField
+            name={`configuration[${index}].rates.beacon`}
+            label="beacon-rate"
+            definitionKey="radio.rates.beacon"
+            isDisabled={!editing}
+            isInt
+            emptyIsUndefined
+            options={[
+              { value: '', label: t('common.none') },
+              { value: 1000, label: '1000' },
+              { value: 2000, label: '2000' },
+              { value: 5500, label: '5500' },
+              { value: 6000, label: '6000' },
+              { value: 9000, label: '9000' },
+              { value: 11000, label: '11000' },
+              { value: 12000, label: '12000' },
+              { value: 18000, label: '18000' },
+              { value: 24000, label: '24000' },
+              { value: 36000, label: '36000' },
+              { value: 48000, label: '48000' },
+              { value: 54000, label: '54000' },
+            ]}
+          />
           <NumberField
             name={`configuration[${index}].beacon-interval`}
             label="beacon-interval"
@@ -177,29 +199,6 @@ const SingleRadio = ({ editing, index, remove }) => {
             emptyIsUndefined
           />
           <SelectField
-            name={`configuration[${index}].rates.beacon`}
-            label="beacon"
-            definitionKey="radio.rates.beacon"
-            isDisabled={!editing}
-            isInt
-            emptyIsUndefined
-            options={[
-              { value: '', label: t('common.none') },
-              { value: 1000, label: '1000' },
-              { value: 2000, label: '2000' },
-              { value: 5500, label: '5500' },
-              { value: 6000, label: '6000' },
-              { value: 9000, label: '9000' },
-              { value: 11000, label: '11000' },
-              { value: 12000, label: '12000' },
-              { value: 18000, label: '18000' },
-              { value: 24000, label: '24000' },
-              { value: 36000, label: '36000' },
-              { value: 48000, label: '48000' },
-              { value: 54000, label: '54000' },
-            ]}
-          />
-          <SelectField
             name={`configuration[${index}].rates.multicast`}
             label="multicast"
             definitionKey="radio.rates.multicast"
@@ -222,28 +221,8 @@ const SingleRadio = ({ editing, index, remove }) => {
               { value: 54000, label: '54000' },
             ]}
           />
-          <ToggleField
-            name={`configuration[${index}].he.multiple-bssid`}
-            label="multiple-bssid"
-            definitionKey="radio.he.multiple-bssid"
-            isDisabled={!editing}
-            falseIsUndefined
-          />
-          <ToggleField
-            name={`configuration[${index}].he.ema`}
-            label="ema"
-            definitionKey="radio.he.ema"
-            isDisabled={!editing}
-            falseIsUndefined
-          />
-          <NumberField
-            name={`configuration[${index}].he.bss-color`}
-            label="bss-color"
-            definitionKey="radio.he.bss-color"
-            isDisabled={!editing}
-            w={24}
-            acceptEmptyValue
-          />
+          <He editing={editing} index={index} />
+          <Rates index={index} />
         </SimpleGrid>
       </CardBody>
     </Card>

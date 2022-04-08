@@ -15,6 +15,7 @@ import Rrm from './Rrm';
 import Roaming from './Roaming';
 import Encryption from './Encryption';
 import Radius from './Radius';
+import RateLimit from './RateLimit';
 
 const propTypes = {
   index: PropTypes.number.isRequired,
@@ -32,11 +33,7 @@ const SingleSsid = ({ editing, index, namePrefix, remove }) => {
       <CardHeader flex="auto">
         <Heading size="md">#{index}</Heading>
         <Spacer />
-        <DeleteButton
-          isDisabled={!editing}
-          onClick={removeSsid}
-          label={t('configurations.delete_ssid')}
-        />
+        <DeleteButton isDisabled={!editing} onClick={removeSsid} label={t('configurations.delete_ssid')} />
       </CardHeader>
       <CardBody display="unset">
         <SimpleGrid minChildWidth="300px" spacing="20px">
@@ -57,7 +54,7 @@ const SingleSsid = ({ editing, index, namePrefix, remove }) => {
               { value: 'sta', label: 'sta' },
               { value: 'mesh', label: 'mesh' },
               { value: 'wds-ap', label: 'wds-ap' },
-              { value: '"wds-sta', label: '"wds-sta' },
+              { value: 'wds-sta', label: 'wds-sta' },
             ]}
             isRequired
           />
@@ -84,7 +81,10 @@ const SingleSsid = ({ editing, index, namePrefix, remove }) => {
             label="services"
             definitionKey="interface.ssid.services"
             isDisabled={!editing}
-            options={[{ value: 'wifi-steering', label: 'wifi-steering' }]}
+            options={[
+              { value: 'wifi-steering', label: 'wifi-steering' },
+              { value: 'dhcp-snooping', label: 'dhcp-snooping' },
+            ]}
           />
           <NumberField
             name={`${namePrefix}.maximum-clients`}
@@ -157,8 +157,13 @@ const SingleSsid = ({ editing, index, namePrefix, remove }) => {
             emptyIsUndefined
           />
         </SimpleGrid>
-        <Encryption editing={editing} namePrefix={`${namePrefix}.encryption`} />
-        <Radius editing={editing} namePrefix={`${namePrefix}.radius`} />
+        <Encryption editing={editing} namePrefix={`${namePrefix}.encryption`} radiusPrefix={`${namePrefix}.radius`} />
+        <Radius
+          editing={editing}
+          namePrefix={`${namePrefix}.radius`}
+          encryptionKeyName={`${namePrefix}.encryption.key`}
+        />
+        <RateLimit editing={editing} namePrefix={`${namePrefix}.rate-limit`} />
         <Rrm editing={editing} namePrefix={`${namePrefix}.rrm`} />
         <Roaming editing={editing} namePrefix={`${namePrefix}.roaming`} />
       </CardBody>

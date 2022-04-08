@@ -7,11 +7,11 @@ import CardBody from 'components/Card/CardBody';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Flex, Heading, useDisclosure, useToast } from '@chakra-ui/react';
 import { useGetConfigurations } from 'hooks/Network/Configurations';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import FormattedDate from 'components/FormattedDate';
 import { ArrowsClockwise } from 'phosphor-react';
 import ColumnPicker from 'components/ColumnPicker';
-import ConfigurationInUseModal from 'components/Modals/ConfigurationInUseModal';
+import ConfigurationInUseModal from 'components/Modals/Configuration/ConfigurationInUseModal';
 import ConfigurationViewAffectedModal from 'components/Tables/ConfigurationTable/ConfigurationViewAffectedModal';
 import CreateConfigurationModal from 'components/Tables/ConfigurationTable/CreateConfigurationModal';
 import Actions from './Actions';
@@ -47,17 +47,14 @@ const ConfigurationsTable = ({ title }) => {
       <Actions
         cell={cell.row}
         refreshTable={refresh}
-        key={createUuid()}
+        key={uuid()}
         openInUseModal={openInUseModal}
         openAffectedModal={openAffectedModal}
       />
     ),
     [],
   );
-  const memoizedDate = useCallback(
-    (cell, key) => <FormattedDate date={cell.row.values[key]} key={createUuid()} />,
-    [],
-  );
+  const memoizedDate = useCallback((cell, key) => <FormattedDate date={cell.row.values[key]} key={uuid()} />, []);
   const memoizedTypes = useCallback((cell) => cell.row.values.deviceTypes.join(', '), []);
 
   // Columns array. This array contains your table headings and accessors which maps keys from data array
@@ -164,11 +161,7 @@ const ConfigurationsTable = ({ title }) => {
         </CardBody>
       </Card>
       <ConfigurationInUseModal isOpen={isInUseOpen} onClose={closeInUse} config={config} />
-      <ConfigurationViewAffectedModal
-        isOpen={isAffectedOpen}
-        onClose={closeAffected}
-        config={config}
-      />
+      <ConfigurationViewAffectedModal isOpen={isAffectedOpen} onClose={closeAffected} config={config} />
     </>
   );
 };

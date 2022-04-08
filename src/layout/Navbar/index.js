@@ -20,10 +20,10 @@ import {
 } from '@chakra-ui/react';
 import routes from 'router/routes';
 import { useAuth } from 'contexts/AuthProvider';
-import { t } from 'i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { uppercaseFirstLetter } from 'utils/stringHelper';
 import { MapTrifold } from 'phosphor-react';
+import { useTranslation } from 'react-i18next';
 
 const propTypes = {
   secondary: PropTypes.bool.isRequired,
@@ -32,6 +32,7 @@ const propTypes = {
 };
 
 const Navbar = ({ secondary, toggleSidebar, isSidebarOpen }) => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
@@ -39,8 +40,7 @@ const Navbar = ({ secondary, toggleSidebar, isSidebarOpen }) => {
   const { logout, user, avatar } = useAuth();
   const getActiveRoute = () => {
     const route = routes.find(
-      (r) =>
-        r.path === location.pathname || location.pathname.split('/')[1] === r.path.split('/')[1],
+      (r) => r.path === location.pathname || location.pathname.split('/')[1] === r.path.split('/')[1],
     );
 
     if (route) return route.navName ?? route.name;
@@ -64,10 +64,7 @@ const Navbar = ({ secondary, toggleSidebar, isSidebarOpen }) => {
     'linear-gradient(112.83deg, rgba(255, 255, 255, 0.21) 0%, rgba(255, 255, 255, 0) 110.84%)',
   );
   const scrolledNavbarBorder = useColorModeValue('#FFFFFF', 'rgba(255, 255, 255, 0.31)');
-  const scrolledNavbarFilter = useColorModeValue(
-    'none',
-    'drop-shadow(0px 7px 23px rgba(0, 0, 0, 0.05))',
-  );
+  const scrolledNavbarFilter = useColorModeValue('none', 'drop-shadow(0px 7px 23px rgba(0, 0, 0, 0.05))');
 
   if (scrolled === true) {
     navbarPosition = 'fixed';
@@ -148,12 +145,7 @@ const Navbar = ({ secondary, toggleSidebar, isSidebarOpen }) => {
                 <Menu>
                   <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
                     <HStack>
-                      <VStack
-                        display={{ base: 'none', md: 'flex' }}
-                        alignItems="flex-start"
-                        spacing={0}
-                        height={12}
-                      >
+                      <VStack display={{ base: 'none', md: 'flex' }} alignItems="flex-start" spacing={0} height={12}>
                         <Text fontWeight="bold">{user?.name}</Text>
                         <Text fontSize="sm">{`${uppercaseFirstLetter(user?.userRole)}`}</Text>
                       </VStack>

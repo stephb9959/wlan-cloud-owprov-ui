@@ -1,17 +1,21 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { EntityShape } from 'constants/propShapes';
 import { Box, useDisclosure } from '@chakra-ui/react';
 import ConfigurationsTable from 'components/Tables/ConfigurationTable';
-import ConfigurationInUseModal from 'components/Modals/ConfigurationInUseModal';
+import ConfigurationInUseModal from 'components/Modals/Configuration/ConfigurationInUseModal';
 import ConfigurationViewAffectedModal from 'components/Tables/ConfigurationTable/ConfigurationViewAffectedModal';
 import CreateConfigurationModal from 'components/Tables/ConfigurationTable/CreateConfigurationModal';
 import { useQueryClient } from 'react-query';
 import Actions from './Actions';
+import UpdateAllDevicesButton from './UpdateAllDevicesButton';
 
 const propTypes = {
-  venue: PropTypes.shape(EntityShape).isRequired,
+  venue: PropTypes.shape(EntityShape),
+};
+const defaultProps = {
+  venue: null,
 };
 
 const VenueConfigurationsTableWrapper = ({ venue }) => {
@@ -30,31 +34,25 @@ const VenueConfigurationsTableWrapper = ({ venue }) => {
 
   const actions = useCallback(
     (cell) => (
-      <Actions
-        key={createUuid()}
-        cell={cell.row}
-        openInUseModal={openInUseModal}
-        openAffectedModal={openAffectedModal}
-      />
+      <Actions key={uuid()} cell={cell.row} openInUseModal={openInUseModal} openAffectedModal={openAffectedModal} />
     ),
     [],
   );
 
+  // PUT updateAllDevices=true
   const refresh = () => queryClient.invalidateQueries(['get-venue', venue.id]);
   return (
     <>
       <Box textAlign="right">
-        <CreateConfigurationModal entityId={`venue:${venue.id}`} refresh={refresh} />
+        <UpdateAllDevicesButton venueId={venue.id} />
+        <CreateConfigurationModal entityId={`venue:${venue.id}`} refresh={refresh} ml={2} />
       </Box>
       <ConfigurationsTable select={venue.configurations} actions={actions} />
       <ConfigurationInUseModal isOpen={isInUseOpen} onClose={closeInUse} config={config} />
-      <ConfigurationViewAffectedModal
-        isOpen={isAffectedOpen}
-        onClose={closeAffected}
-        config={config}
-      />
+      <ConfigurationViewAffectedModal isOpen={isAffectedOpen} onClose={closeAffected} config={config} />
     </>
   );
 };
 VenueConfigurationsTableWrapper.propTypes = propTypes;
+VenueConfigurationsTableWrapper.defaultProps = defaultProps;
 export default VenueConfigurationsTableWrapper;

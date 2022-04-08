@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { SubscriberShape } from 'constants/propShapes';
 import InventoryTable from 'components/Tables/InventoryTable';
 import { Flex, Heading, Spacer, useDisclosure, useToast } from '@chakra-ui/react';
@@ -37,20 +37,12 @@ const SubscriberDeviceTableWrapper = ({ subscriber }) => {
     openEdit();
   };
 
-  const refreshEntity = () =>
-    queryClient.invalidateQueries(['get-inventory-with-owner', subscriber.id]);
+  const refreshEntity = () => queryClient.invalidateQueries(['get-inventory-with-owner', subscriber.id]);
 
   const refetchTags = () => setRefreshId(refreshId + 1);
 
   const actions = useCallback(
-    (cell) => (
-      <Actions
-        key={createUuid()}
-        cell={cell.row}
-        refreshEntity={refreshEntity}
-        openEditModal={openEditModal}
-      />
-    ),
+    (cell) => <Actions key={uuid()} cell={cell.row} refreshEntity={refreshEntity} openEditModal={openEditModal} />,
     [refreshId],
   );
 
@@ -74,11 +66,7 @@ const SubscriberDeviceTableWrapper = ({ subscriber }) => {
         refresh={refetchTags}
         pushConfig={pushConfiguration}
       />
-      <ConfigurationPushModal
-        isOpen={isPushOpen}
-        onClose={closePush}
-        pushResult={pushConfiguration.data}
-      />
+      <ConfigurationPushModal isOpen={isPushOpen} onClose={closePush} pushResult={pushConfiguration.data} />
     </>
   );
 };

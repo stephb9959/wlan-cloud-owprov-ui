@@ -11,14 +11,15 @@ const findDefinition = (definitionKey, CONFIGURATION_DESCRIPTIONS) => {
   if (length < 2) return null;
   const start = split.slice(0, length - 1);
   const end = split[length - 1];
-  return (
-    CONFIGURATION_DESCRIPTIONS[start.slice(0, length - 1).join('.')]?.properties[end]
-      ?.description ?? null
-  );
+  return CONFIGURATION_DESCRIPTIONS[start.slice(0, length - 1).join('.')]?.properties[end]?.description ?? null;
 };
 
 const propTypes = {
-  definitionKey: PropTypes.string.isRequired,
+  definitionKey: PropTypes.string,
+};
+
+const defaultProps = {
+  definitionKey: null,
 };
 
 const ConfigurationFieldExplanation = ({ definitionKey }) => {
@@ -37,4 +38,5 @@ const ConfigurationFieldExplanation = ({ definitionKey }) => {
 };
 
 ConfigurationFieldExplanation.propTypes = propTypes;
+ConfigurationFieldExplanation.defaultProps = defaultProps;
 export default React.memo(ConfigurationFieldExplanation);

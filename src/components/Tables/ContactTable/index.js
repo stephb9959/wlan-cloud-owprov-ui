@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DataTable from 'components/DataTable';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@chakra-ui/react';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import FormattedDate from 'components/FormattedDate';
 import { useGetSelectContacts } from 'hooks/Network/Contacts';
 
@@ -26,10 +26,7 @@ const ContactTable = ({ actions, select, ignoredColumns, refreshId, disabledIds 
   const toast = useToast();
   const { data: venues, isFetching, refetch } = useGetSelectContacts({ t, toast, select });
 
-  const memoizedDate = useCallback(
-    (cell, key) => <FormattedDate date={cell.row.values[key]} key={createUuid()} />,
-    [],
-  );
+  const memoizedDate = useCallback((cell, key) => <FormattedDate date={cell.row.values[key]} key={uuid()} />, []);
 
   // Columns array. This array contains your table headings and accessors which maps keys from data array
   const columns = React.useMemo(() => {

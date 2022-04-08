@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
   useToast,
   Tabs,
@@ -22,7 +22,7 @@ import { EntitySchema } from 'constants/formSchemas';
 import { useGetConfigurationInUse } from 'hooks/Network/Configurations';
 import useGetDeviceTypes from 'hooks/Network/DeviceTypes';
 import ToggleField from 'components/FormFields/ToggleField';
-import ConfigurationInUseModal from 'components/Modals/ConfigurationInUseModal';
+import ConfigurationInUseModal from 'components/Modals/Configuration/ConfigurationInUseModal';
 import StringField from 'components/FormFields/StringField';
 import SelectField from 'components/FormFields/SelectField';
 import MultiSelectField from 'components/FormFields/MultiSelectField';
@@ -39,7 +39,7 @@ const propTypes = {
 const EditConfigurationForm = ({ editing, configuration, formRef }) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: entities } = useGetEntities({ t, toast });
   const { data: venues } = useGetVenues({ t, toast });
@@ -58,7 +58,7 @@ const EditConfigurationForm = ({ editing, configuration, formRef }) => {
   };
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [editing]);
 
   return (
@@ -183,9 +183,9 @@ const EditConfigurationForm = ({ editing, configuration, formRef }) => {
                         In Use By
                       </FormLabel>
                       <Button variant="link" mt={2} onClick={onOpen}>
-                        {`${inUse?.ent?.length ?? 0} ${t('entities.one')}, ${
-                          inUse?.ven?.length ?? 0
-                        } ${t('venues.one')}, ${inUse?.inv?.length ?? 0} ${t('devices.title')}`}
+                        {`${inUse?.ent?.length ?? 0} ${t('entities.one')}, ${inUse?.ven?.length ?? 0} ${t(
+                          'venues.one',
+                        )}, ${inUse?.inv?.length ?? 0} ${t('devices.title')}`}
                       </Button>
                     </FormControl>
                   </SimpleGrid>
@@ -193,13 +193,7 @@ const EditConfigurationForm = ({ editing, configuration, formRef }) => {
               </TabPanel>
               <TabPanel>
                 <Field name="notes">
-                  {({ field }) => (
-                    <NotesTable
-                      notes={field.value}
-                      setNotes={setFieldValue}
-                      isDisabled={!editing}
-                    />
-                  )}
+                  {({ field }) => <NotesTable notes={field.value} setNotes={setFieldValue} isDisabled={!editing} />}
                 </Field>
               </TabPanel>
             </TabPanels>

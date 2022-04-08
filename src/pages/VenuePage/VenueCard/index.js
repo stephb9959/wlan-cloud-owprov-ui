@@ -10,6 +10,8 @@ import RefreshButton from 'components/Buttons/RefreshButton';
 import ToggleEditButton from 'components/Buttons/ToggleEditButton';
 import SaveButton from 'components/Buttons/SaveButton';
 import LoadingOverlay from 'components/LoadingOverlay';
+import { useGetAnalyticsBoard } from 'hooks/Network/Analytics';
+import { useAuth } from 'contexts/AuthProvider';
 import EditVenueForm from './Form';
 import DeleteVenuePopover from './DeleteVenuePopover';
 import CreateVenueModal from '../../../components/Tables/VenueTable/CreateVenueModal';
@@ -21,8 +23,14 @@ const propTypes = {
 const VenueCard = ({ id }) => {
   const { t } = useTranslation();
   const toast = useToast();
+  const { endpoints } = useAuth();
   const [editing, setEditing] = useBoolean();
   const { data: venue, refetch, isFetching } = useGetVenue({ t, toast, id });
+  const { data: board, isFetching: isFetchingBoard } = useGetAnalyticsBoard({
+    t,
+    toast,
+    id: endpoints?.owanalytics && venue?.boards.length > 0 ? venue.boards[0] : null,
+  });
   const [form, setForm] = useState({});
   const formRef = useCallback(
     (node) => {
@@ -67,7 +75,7 @@ const VenueCard = ({ id }) => {
         </Box>
       </CardHeader>
       <CardBody>
-        {!venue && isFetching ? (
+        {(!venue && isFetching) || (!board && isFetchingBoard) ? (
           <Center w="100%">
             <Spinner size="xl" />
           </Center>
@@ -78,6 +86,7 @@ const VenueCard = ({ id }) => {
               venue={venue}
               stopEditing={setEditing.off}
               formRef={formRef}
+              board={board}
             />
           </LoadingOverlay>
         )}

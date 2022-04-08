@@ -2,16 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import EntityDeviceTableWrapper from 'pages/EntityPage/EntityChildrenCard/EntityDeviceTableWrapper';
 import Card from 'components/Card';
-import {
-  Center,
-  Spinner,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  useToast,
-} from '@chakra-ui/react';
+import { Center, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import LoadingOverlay from 'components/LoadingOverlay';
 import { useGetEntity } from 'hooks/Network/Entity';
@@ -21,6 +12,7 @@ import EntityLocationTableWrapper from './EntityLocationTableWrapper ';
 import EntityContactTableWrapper from './EntityContactTableWrapper ';
 import EntityChildrenTableWrapper from './EntityChildrenTableWrapper';
 import EntityConfigurationsTableWrapper from './EntityConfigurationsTableWrapper';
+import EntityResourcesTableWrapper from './EntityResourcesTableWrapper';
 
 const propTypes = {
   id: PropTypes.string.isRequired,
@@ -42,6 +34,7 @@ const EntityChildrenCard = ({ id }) => {
             <Tab>{t('inventory.title')}</Tab>
             <Tab>{t('locations.other')}</Tab>
             <Tab>{t('contacts.other')}</Tab>
+            <Tab>{t('resources.title')}</Tab>
           </TabList>
           {!entity && isFetching ? (
             <Center w="100%">
@@ -67,6 +60,9 @@ const EntityChildrenCard = ({ id }) => {
                 </TabPanel>
                 <TabPanel overflowX="auto">
                   <EntityContactTableWrapper entity={entity} />
+                </TabPanel>
+                <TabPanel overflowX="auto">
+                  <EntityResourcesTableWrapper entity={entity} />
                 </TabPanel>
               </TabPanels>
             </LoadingOverlay>

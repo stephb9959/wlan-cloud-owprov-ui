@@ -88,8 +88,7 @@ const EditTagModal = ({ isOpen, onClose, tag, refresh, pushConfig }) => {
 
   const onConfigurationChange = useCallback((conf) => setConfiguration(conf), []);
 
-  const closeModal = () =>
-    form.dirty || configuration?.__form?.isDirty ? openConfirm() : onClose();
+  const closeModal = () => (form.dirty || configuration?.__form?.isDirty ? openConfirm() : onClose());
   const closeCancelAndForm = () => {
     closeConfirm();
     onClose();
@@ -109,17 +108,13 @@ const EditTagModal = ({ isOpen, onClose, tag, refresh, pushConfig }) => {
       <ModalOverlay />
       <ModalContent maxWidth={{ sm: '90%', md: '900px', lg: '1000px', xl: '80%' }}>
         <ModalHeader
-          title={t('crud.edit_obj', { obj: tag?.name })}
+          title={t('crud.edit_obj', { obj: tag?.name ?? tag?.serialNumber })}
           right={
             <>
               <SaveButton
                 onClick={form.submitForm}
                 isLoading={form.isSubmitting}
-                isDisabled={
-                  !editing ||
-                  !form.isValid ||
-                  (configuration !== null && !configuration.__form.isValid)
-                }
+                isDisabled={!editing || !form.isValid || (configuration !== null && !configuration.__form.isValid)}
               />
               <Tooltip hasArrow label={t('configurations.push_configuration')} placement="top">
                 <IconButton

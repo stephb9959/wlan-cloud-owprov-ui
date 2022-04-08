@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useToast, SimpleGrid } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import { CreateLocationSchema } from 'constants/formSchemas';
@@ -12,7 +12,7 @@ import { useCreateLocation } from 'hooks/Network/Locations';
 import SelectField from 'components/FormFields/SelectField';
 import CreatableSelectField from 'components/FormFields/CreatableSelectField';
 import COUNTRY_LIST from 'constants/countryList';
-import AddressSearchField from 'components/FormFields/AddressSearchField';
+import AddressSearchField from 'components/CustomFields/AddressSearchField';
 import { useQueryClient } from 'react-query';
 
 const propTypes = {
@@ -30,14 +30,14 @@ const defaultProps = {
 const CreateLocationForm = ({ isOpen, onClose, refresh, formRef, entityId }) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const { data: entities } = useGetEntities({ t, toast });
   const queryClient = useQueryClient();
 
   const create = useCreateLocation();
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   return (
@@ -123,7 +123,7 @@ const CreateLocationForm = ({ isOpen, onClose, refresh, formRef, entityId }) => 
             },
             onError: (e) => {
               toast({
-                id: createUuid(),
+                id: uuid(),
                 title: t('common.error'),
                 description: t('crud.error_create_obj', {
                   obj: t('locations.one'),
@@ -143,19 +143,8 @@ const CreateLocationForm = ({ isOpen, onClose, refresh, formRef, entityId }) => 
       {({ errors, touched, setFieldValue }) => (
         <Form>
           <SimpleGrid minChildWidth="300px" spacing="20px" mb={8}>
-            <StringField
-              name="name"
-              label={t('common.name')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
-            <StringField
-              name="description"
-              label={t('common.description')}
-              errors={errors}
-              touched={touched}
-            />
+            <StringField name="name" label={t('common.name')} errors={errors} touched={touched} isRequired />
+            <StringField name="description" label={t('common.description')} errors={errors} touched={touched} />
             <SelectWithSearchField
               name="entity"
               label={t('inventory.parent')}
@@ -204,11 +193,7 @@ const CreateLocationForm = ({ isOpen, onClose, refresh, formRef, entityId }) => 
             />
           </SimpleGrid>
 
-          <AddressSearchField
-            placeholder={t('common.address_search_autofill')}
-            maxWidth="600px"
-            mb={2}
-          />
+          <AddressSearchField placeholder={t('common.address_search_autofill')} maxWidth="600px" mb={2} />
           <SimpleGrid minChildWidth="300px" spacing="20px" mb={8}>
             <StringField
               name="addressLineOne"
@@ -223,27 +208,9 @@ const CreateLocationForm = ({ isOpen, onClose, refresh, formRef, entityId }) => 
               errors={errors}
               touched={touched}
             />
-            <StringField
-              name="city"
-              label={t('locations.city')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
-            <StringField
-              name="state"
-              label={t('locations.state')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
-            <StringField
-              name="postal"
-              label={t('locations.postal')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
+            <StringField name="city" label={t('locations.city')} errors={errors} touched={touched} isRequired />
+            <StringField name="state" label={t('locations.state')} errors={errors} touched={touched} isRequired />
+            <StringField name="postal" label={t('locations.postal')} errors={errors} touched={touched} isRequired />
             <SelectField
               name="country"
               label={t('locations.country')}
@@ -251,18 +218,8 @@ const CreateLocationForm = ({ isOpen, onClose, refresh, formRef, entityId }) => 
               touched={touched}
               options={COUNTRY_LIST}
             />
-            <StringField
-              name="buildingName"
-              label={t('locations.building_name')}
-              errors={errors}
-              touched={touched}
-            />
-            <StringField
-              name="geoCode"
-              label={t('locations.geocode')}
-              errors={errors}
-              touched={touched}
-            />
+            <StringField name="buildingName" label={t('locations.building_name')} errors={errors} touched={touched} />
+            <StringField name="geoCode" label={t('locations.geocode')} errors={errors} touched={touched} />
             <StringField name="note" label={t('common.note')} errors={errors} touched={touched} />
           </SimpleGrid>
         </Form>

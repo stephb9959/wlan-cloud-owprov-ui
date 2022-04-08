@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -42,22 +42,27 @@ const renderList = (tree, depth, goTo) => {
               colorScheme="blue"
               variant="link"
               onClick={() => goTo(tree.uuid, tree.type)}
-              leftIcon={
-                tree.type === 'entity' ? <TreeStructure size={16} /> : <Buildings size={16} />
-              }
+              leftIcon={tree.type === 'entity' ? <TreeStructure size={16} /> : <Buildings size={16} />}
             >
               {tree.name}
             </Button>
-            <UnorderedList styleType="none">
-              {renderList(tree.children, depth + 2, goTo)}
-            </UnorderedList>
+            <UnorderedList styleType="none">{renderList(tree.children, depth + 2, goTo)}</UnorderedList>
           </ListItem>
         </UnorderedList>
       );
     }
     return (
       <UnorderedList ml={depth}>
-        <ListItem key={createUuid()}>{tree.name}</ListItem>
+        <ListItem>
+          <Button
+            colorScheme="blue"
+            variant="link"
+            onClick={() => goTo(tree.uuid, tree.type)}
+            leftIcon={tree.type === 'entity' ? <TreeStructure size={16} /> : <Buildings size={16} />}
+          >
+            {tree.name}
+          </Button>
+        </ListItem>
       </UnorderedList>
     );
   }
@@ -68,14 +73,12 @@ const renderList = (tree, depth, goTo) => {
 
       if (childrenLength === 0)
         return (
-          <ListItem key={createUuid()}>
+          <ListItem key={uuid()}>
             <Button
               colorScheme="blue"
               variant="link"
               onClick={() => goTo(obj.uuid, obj.type)}
-              leftIcon={
-                obj.type === 'entity' ? <TreeStructure size={16} /> : <Buildings size={16} />
-              }
+              leftIcon={obj.type === 'entity' ? <TreeStructure size={16} /> : <Buildings size={16} />}
             >
               {obj.name}
             </Button>
@@ -83,7 +86,7 @@ const renderList = (tree, depth, goTo) => {
         );
 
       return (
-        <ListItem key={createUuid()}>
+        <ListItem key={uuid()}>
           <Button
             colorScheme="blue"
             variant="link"
@@ -106,7 +109,7 @@ const renderList = (tree, depth, goTo) => {
 
     if (childrenLength === 0 && venuesLength === 0)
       return (
-        <ListItem key={createUuid()}>
+        <ListItem key={uuid()}>
           <Button
             colorScheme="blue"
             variant="link"
@@ -119,7 +122,7 @@ const renderList = (tree, depth, goTo) => {
       );
 
     return (
-      <ListItem key={createUuid()}>
+      <ListItem key={uuid()}>
         <Button
           colorScheme="blue"
           variant="link"
@@ -181,13 +184,7 @@ const EntityPopover = ({ isOpen, onClose, children, toggleSidebar }) => {
           <PopoverHeader fontWeight="semibold" display="flex" alignItems="center">
             <Heading size="md">{t('entities.title')}</Heading>
             <Spacer />
-            <IconButton
-              ref={initRef}
-              colorScheme="gray"
-              onClick={onClose}
-              icon={<X size={20} />}
-              ms="auto"
-            />
+            <IconButton ref={initRef} colorScheme="gray" onClick={onClose} icon={<X size={20} />} ms="auto" />
           </PopoverHeader>
           <PopoverArrow />
           <PopoverBody overflowX="auto" overflowY="auto" maxH="80vh">
@@ -206,13 +203,7 @@ const EntityPopover = ({ isOpen, onClose, children, toggleSidebar }) => {
             <PopoverHeader fontWeight="semibold" display="flex" alignItems="center">
               <Heading size="md">{t('entities.title')}</Heading>
               <Spacer />
-              <IconButton
-                ref={initRef}
-                colorScheme="gray"
-                onClick={onClose}
-                icon={<X size={20} />}
-                ms="auto"
-              />
+              <IconButton ref={initRef} colorScheme="gray" onClick={onClose} icon={<X size={20} />} ms="auto" />
             </PopoverHeader>
             <PopoverArrow />
             <PopoverBody overflowY="auto" maxH="80vh">

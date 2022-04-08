@@ -16,14 +16,16 @@ const propTypes = {
   refresh: PropTypes.func.isRequired,
   entityId: PropTypes.string,
   subId: PropTypes.string,
+  deviceClass: PropTypes.string,
 };
 
 const defaultProps = {
   entityId: '',
   subId: '',
+  deviceClass: '',
 };
 
-const CreateTagModal = ({ refresh, entityId, subId }) => {
+const CreateTagModal = ({ refresh, entityId, subId, deviceClass }) => {
   const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: showConfirm, onOpen: openConfirm, onClose: closeConfirm } = useDisclosure();
@@ -64,8 +66,7 @@ const CreateTagModal = ({ refresh, entityId, subId }) => {
     setConfiguration(null);
     onOpen();
   };
-  const closeModal = () =>
-    form.dirty || configuration?.__form?.isDirty ? openConfirm() : onClose();
+  const closeModal = () => (form.dirty || configuration?.__form?.isDirty ? openConfirm() : onClose());
   const closeCancelAndForm = () => {
     closeConfirm();
     onClose();
@@ -84,11 +85,7 @@ const CreateTagModal = ({ refresh, entityId, subId }) => {
                 <SaveButton
                   onClick={form.submitForm}
                   isLoading={form.isSubmitting}
-                  isDisabled={
-                    !form.isValid ||
-                    !form.dirty ||
-                    (configuration !== null && !configuration.__form.isValid)
-                  }
+                  isDisabled={!form.isValid || !form.dirty || (configuration !== null && !configuration.__form.isValid)}
                 />
                 <CloseButton ml={2} onClick={closeModal} />
               </>
@@ -106,14 +103,11 @@ const CreateTagModal = ({ refresh, entityId, subId }) => {
               subId={subId}
               configuration={configuration}
               onConfigurationChange={onConfigurationChange}
+              deviceClass={deviceClass}
             />
           </ModalBody>
         </ModalContent>
-        <ConfirmCloseAlert
-          isOpen={showConfirm}
-          confirm={closeCancelAndForm}
-          cancel={closeConfirm}
-        />
+        <ConfirmCloseAlert isOpen={showConfirm} confirm={closeCancelAndForm} cancel={closeConfirm} />
       </Modal>
     </>
   );

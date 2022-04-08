@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormControl, Input, InputGroup } from '@chakra-ui/react';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 const propTypes = {
   value: PropTypes.string.isRequired,
@@ -18,16 +18,8 @@ const defaultProps = {
   isStringFile: false,
 };
 
-const FileInputButton = ({
-  value,
-  setValue,
-  setFileName,
-  refreshId,
-  accept,
-  isHidden,
-  isStringFile,
-}) => {
-  const [fileKey, setFileKey] = useState(createUuid());
+const FileInputButton = ({ value, setValue, setFileName, refreshId, accept, isHidden, isStringFile }) => {
+  const [fileKey, setFileKey] = useState(uuid());
   let fileReader;
 
   const handleStringFileRead = () => {
@@ -52,7 +44,7 @@ const FileInputButton = ({
   };
 
   useEffect(() => {
-    if (value === '') setFileKey(createUuid());
+    if (value === '') setFileKey(uuid());
   }, [refreshId, value]);
 
   return (

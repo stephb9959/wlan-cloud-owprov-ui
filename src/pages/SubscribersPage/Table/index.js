@@ -1,12 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
 import DataTable from 'components/DataTable';
-import Card from 'components/Card';
-import CardHeader from 'components/Card/CardHeader';
-import CardBody from 'components/Card/CardBody';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Flex, Heading, useToast } from '@chakra-ui/react';
-import { v4 as createUuid } from 'uuid';
+import { Box, Button, Flex, useToast } from '@chakra-ui/react';
+import { v4 as uuid } from 'uuid';
 import FormattedDate from 'components/FormattedDate';
 import { ArrowsClockwise } from 'phosphor-react';
 import ColumnPicker from 'components/ColumnPicker';
@@ -15,29 +11,15 @@ import useGetRequirements from 'hooks/Network/Requirements';
 import CreateSubscriberModal from './CreateSubscriberModal';
 import Actions from './Actions';
 
-const propTypes = {
-  title: PropTypes.string,
-};
-
-const defaultProps = {
-  title: null,
-};
-
-const SubscribersTable = ({ title }) => {
+const SubscribersTable = () => {
   const { t } = useTranslation();
   const toast = useToast();
   const { data: requirements } = useGetRequirements();
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const { data: subscribers, refetch: refresh, isFetching } = useGetSubscribers({ t, toast });
 
-  const memoizedActions = useCallback(
-    (cell) => <Actions cell={cell.row} refreshTable={refresh} key={createUuid()} />,
-    [],
-  );
-  const memoizedDate = useCallback(
-    (cell, key) => <FormattedDate date={cell.row.values[key]} key={createUuid()} />,
-    [],
-  );
+  const memoizedActions = useCallback((cell) => <Actions cell={cell.row} refreshTable={refresh} key={uuid()} />, []);
+  const memoizedDate = useCallback((cell, key) => <FormattedDate date={cell.row.values[key]} key={uuid()} />, []);
 
   // Columns array. This array contains your table headings and accessors which maps keys from data array
   const columns = React.useMemo(() => {
@@ -101,49 +83,33 @@ const SubscribersTable = ({ title }) => {
   }, []);
 
   return (
-    <Card>
-      <CardHeader mb="10px">
-        <Box>
-          <Heading size="md">{title}</Heading>
-        </Box>
-        <Flex w="100%" flexDirection="row" alignItems="center">
-          <Box ms="auto">
-            <ColumnPicker
-              columns={columns}
-              hiddenColumns={hiddenColumns}
-              setHiddenColumns={setHiddenColumns}
-              preference="provisioning.subscriberTable.hiddenColumns"
-            />
-            <CreateSubscriberModal refresh={refresh} requirements={requirements} />
-            <Button
-              colorScheme="gray"
-              onClick={refresh}
-              rightIcon={<ArrowsClockwise />}
-              ml={2}
-              isLoading={isFetching}
-            >
-              {t('common.refresh')}
-            </Button>
-          </Box>
-        </Flex>
-      </CardHeader>
-      <CardBody>
-        <Box overflowX="auto" w="100%">
-          <DataTable
+    <>
+      <Flex w="100%" flexDirection="row" alignItems="center">
+        <Box ms="auto">
+          <ColumnPicker
             columns={columns}
-            data={subscribers ?? []}
-            isLoading={isFetching}
-            obj={t('subscribers.title')}
             hiddenColumns={hiddenColumns}
-            fullScreen
+            setHiddenColumns={setHiddenColumns}
+            preference="provisioning.subscriberTable.hiddenColumns"
           />
+          <CreateSubscriberModal refresh={refresh} requirements={requirements} />
+          <Button colorScheme="gray" onClick={refresh} rightIcon={<ArrowsClockwise />} ml={2} isLoading={isFetching}>
+            {t('common.refresh')}
+          </Button>
         </Box>
-      </CardBody>
-    </Card>
+      </Flex>
+      <Box overflowX="auto" w="100%">
+        <DataTable
+          columns={columns}
+          data={subscribers ?? []}
+          isLoading={isFetching}
+          obj={t('subscribers.title')}
+          hiddenColumns={hiddenColumns}
+          minHeight={{ base: 'calc(100vh - 360px)', md: 'calc(100vh - 350px)' }}
+        />
+      </Box>
+    </>
   );
 };
-
-SubscribersTable.propTypes = propTypes;
-SubscribersTable.defaultProps = defaultProps;
 
 export default SubscribersTable;

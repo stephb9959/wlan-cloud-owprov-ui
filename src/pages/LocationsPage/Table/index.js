@@ -6,7 +6,7 @@ import CardHeader from 'components/Card/CardHeader';
 import CardBody from 'components/Card/CardBody';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Flex, Heading, useDisclosure, useToast } from '@chakra-ui/react';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import FormattedDate from 'components/FormattedDate';
 import { ArrowsClockwise } from 'phosphor-react';
 import ColumnPicker from 'components/ColumnPicker';
@@ -57,26 +57,13 @@ const LocationsTable = ({ title }) => {
   };
 
   const memoizedActions = useCallback(
-    (cell) => (
-      <Actions
-        cell={cell.row}
-        refreshTable={refetchCount}
-        key={createUuid()}
-        openEditModal={openEditModal}
-      />
-    ),
+    (cell) => <Actions cell={cell.row} refreshTable={refetchCount} key={uuid()} openEditModal={openEditModal} />,
     [],
   );
-  const memoizedDate = useCallback(
-    (cell, key) => <FormattedDate date={cell.row.values[key]} key={createUuid()} />,
-    [],
-  );
+  const memoizedDate = useCallback((cell, key) => <FormattedDate date={cell.row.values[key]} key={uuid()} />, []);
   const entityCell = useCallback(
     (cell) => (
-      <EntityCell
-        entityName={cell.row.original.extendedInfo?.entity?.name ?? ''}
-        entityId={cell.row.original.entity}
-      />
+      <EntityCell entityName={cell.row.original.extendedInfo?.entity?.name ?? ''} entityId={cell.row.original.entity} />
     ),
     [],
   );
@@ -185,12 +172,7 @@ const LocationsTable = ({ title }) => {
         </CardBody>
       </Card>
       {isEditOpen && (
-        <EditLocationModal
-          isOpen={isEditOpen}
-          onClose={closeEdit}
-          location={location}
-          refresh={refetchLocations}
-        />
+        <EditLocationModal isOpen={isEditOpen} onClose={closeEdit} location={location} refresh={refetchLocations} />
       )}
     </>
   );

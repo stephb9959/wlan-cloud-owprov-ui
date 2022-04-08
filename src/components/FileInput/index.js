@@ -11,7 +11,7 @@ import {
   InputRightElement,
 } from '@chakra-ui/react';
 import Papa from 'papaparse';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { CloseIcon } from '@chakra-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { testMac } from 'constants/formTests';
@@ -41,7 +41,7 @@ const defaultProps = {
 const FileInput = ({ setValue, refreshId, errors }) => {
   const { t } = useTranslation();
   const [result, setResult] = useState(null);
-  const [fileKey, setFileKey] = useState(createUuid());
+  const [fileKey, setFileKey] = useState(uuid());
 
   const parseFile = async (file) => {
     setResult(null);
@@ -124,7 +124,7 @@ const FileInput = ({ setValue, refreshId, errors }) => {
   const resetFile = () => {
     setResult(null);
     setValue('commonNames', []);
-    setFileKey(createUuid());
+    setFileKey(uuid());
   };
 
   const changeFile = (e) => {
@@ -141,7 +141,7 @@ const FileInput = ({ setValue, refreshId, errors }) => {
   };
 
   useEffect(() => {
-    setFileKey(createUuid());
+    setFileKey(uuid());
   }, [refreshId]);
 
   return (
@@ -150,15 +150,7 @@ const FileInput = ({ setValue, refreshId, errors }) => {
         {t('certificates.device_macs')}
       </FormLabel>
       <InputGroup>
-        <Input
-          borderRadius="15px"
-          pt={1}
-          fontSize="sm"
-          type="file"
-          onChange={changeFile}
-          key={fileKey}
-          accept=".csv"
-        />
+        <Input borderRadius="15px" pt={1} fontSize="sm" type="file" onChange={changeFile} key={fileKey} accept=".csv" />
         <InputRightElement hidden={!result}>
           {' '}
           <IconButton icon={<CloseIcon />} onClick={resetFile} />

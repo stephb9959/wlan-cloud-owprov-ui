@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { EntityShape } from 'constants/propShapes';
 import { Box, useDisclosure } from '@chakra-ui/react';
 import { useQueryClient } from 'react-query';
@@ -10,7 +10,10 @@ import ContactTable from 'components/Tables/ContactTable';
 import Actions from './Actions';
 
 const propTypes = {
-  venue: PropTypes.shape(EntityShape).isRequired,
+  venue: PropTypes.shape(EntityShape),
+};
+const defaultProps = {
+  venue: null,
 };
 
 const VenueContactTableWrapper = ({ venue }) => {
@@ -32,14 +35,7 @@ const VenueContactTableWrapper = ({ venue }) => {
   };
 
   const actions = useCallback(
-    (cell) => (
-      <Actions
-        key={createUuid()}
-        cell={cell.row}
-        refreshEntity={refreshEntity}
-        openEditModal={openEditModal}
-      />
-    ),
+    (cell) => <Actions key={uuid()} cell={cell.row} refreshEntity={refreshEntity} openEditModal={openEditModal} />,
     [refreshId],
   );
 
@@ -54,15 +50,11 @@ const VenueContactTableWrapper = ({ venue }) => {
         refreshId={refreshId}
         ignoredColumns={['entity', 'venue']}
       />
-      <EditContactModal
-        isOpen={isEditOpen}
-        onClose={closeEdit}
-        contact={contact}
-        refresh={refetchLocations}
-      />
+      <EditContactModal isOpen={isEditOpen} onClose={closeEdit} contact={contact} refresh={refetchLocations} />
     </>
   );
 };
 
 VenueContactTableWrapper.propTypes = propTypes;
+VenueContactTableWrapper.defaultProps = defaultProps;
 export default VenueContactTableWrapper;

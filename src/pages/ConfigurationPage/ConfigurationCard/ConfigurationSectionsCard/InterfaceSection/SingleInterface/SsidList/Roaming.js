@@ -24,10 +24,7 @@ const Roaming = ({ editing, namePrefix }) => {
     }
   };
 
-  const isEnabled = useMemo(
-    () => getIn(values, `${namePrefix}`) !== undefined,
-    [getIn(values, `${namePrefix}`)],
-  );
+  const isEnabled = useMemo(() => getIn(values, `${namePrefix}`) !== undefined, [getIn(values, `${namePrefix}`)]);
 
   return (
     <>
@@ -70,14 +67,14 @@ const Roaming = ({ editing, namePrefix }) => {
             label="pmk-r0-key-holder"
             definitionKey="interface.ssid.roaming.pmk-r0-key-holder"
             isDisabled={!editing}
-            isRequired
+            emptyIsUndefined
           />
           <StringField
             name={`${namePrefix}.pmk-r1-key-holder`}
             label="pmk-r1-key-holder"
             definitionKey="interface.ssid.roaming.pmk-r1-key-holder"
             isDisabled={!editing}
-            isRequired
+            emptyIsUndefined
           />
         </SimpleGrid>
       )}

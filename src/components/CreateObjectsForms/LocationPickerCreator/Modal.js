@@ -1,14 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  CloseButton,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
-  SimpleGrid,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { CloseButton, Modal, ModalBody, ModalContent, ModalOverlay, SimpleGrid, useDisclosure } from '@chakra-ui/react';
 import ModalHeader from 'components/ModalHeader';
 import SaveButton from 'components/Buttons/SaveButton';
 import ConfirmCloseAlert from 'components/ConfirmCloseAlert';
@@ -18,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import StringField from 'components/FormFields/StringField';
 import SelectField from 'components/FormFields/SelectField';
 import CreatableSelectField from 'components/FormFields/CreatableSelectField';
-import AddressSearchField from 'components/FormFields/AddressSearchField';
+import AddressSearchField from 'components/CustomFields/AddressSearchField';
 import COUNTRY_LIST from 'constants/countryList';
 
 const propTypes = {
@@ -154,29 +146,13 @@ const LocationPickerCreatorModal = ({ setLocation, reset }) => {
                     { label: 'CORPORATE', value: 'CORPORATE' },
                   ]}
                 />
-                <CreatableSelectField
-                  name="phones"
-                  label={t('contacts.phones')}
-                  placeholder="+1(202)555-0103"
-                />
-                <CreatableSelectField
-                  name="mobiles"
-                  label={t('contacts.mobiles')}
-                  placeholder="+1(202)555-0103"
-                />
+                <CreatableSelectField name="phones" label={t('contacts.phones')} placeholder="+1(202)555-0103" />
+                <CreatableSelectField name="mobiles" label={t('contacts.mobiles')} placeholder="+1(202)555-0103" />
               </SimpleGrid>
 
-              <AddressSearchField
-                placeholder={t('common.address_search_autofill')}
-                maxWidth="600px"
-                mb={2}
-              />
+              <AddressSearchField placeholder={t('common.address_search_autofill')} maxWidth="600px" mb={2} />
               <SimpleGrid minChildWidth="300px" spacing="20px" mb={8}>
-                <StringField
-                  name="addressLineOne"
-                  label={t('locations.address_line_one')}
-                  isRequired
-                />
+                <StringField name="addressLineOne" label={t('locations.address_line_one')} isRequired />
                 <StringField name="addressLineTwo" label={t('locations.address_line_two')} />
                 <StringField name="city" label={t('locations.city')} isRequired />
                 <StringField name="state" label={t('locations.state')} isRequired />

@@ -1,8 +1,9 @@
 import React, { Suspense } from 'react';
 import { Flex, Portal, Spinner, useBoolean, useBreakpoint } from '@chakra-ui/react';
 import { Route, Routes } from 'react-router-dom';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import routes from 'router/routes';
+import CreateRootModal from 'components/Modals/Entity/CreateRootModal';
 import MainPanel from './MainPanel';
 import Navbar from './Navbar';
 import PanelContent from './Containers/PanelContent';
@@ -11,9 +12,7 @@ import Sidebar from './Sidebar';
 
 const Layout = () => {
   const breakpoint = useBreakpoint();
-  const [isSidebarOpen, { toggle: toggleSidebar }] = useBoolean(
-    breakpoint !== 'base' && breakpoint !== 'sm',
-  );
+  const [isSidebarOpen, { toggle: toggleSidebar }] = useBoolean(breakpoint !== 'base' && breakpoint !== 'sm');
   document.documentElement.dir = 'ltr';
 
   const getActiveRoute = (r) => {
@@ -52,8 +51,7 @@ const Layout = () => {
     }
     return activeNavbar;
   };
-  const getRoutes = (r) =>
-    r.map((route) => <Route path={route.path} element={<route.component />} key={createUuid()} />);
+  const getRoutes = (r) => r.map((route) => <Route path={route.path} element={<route.component />} key={uuid()} />);
 
   return (
     <>
@@ -80,6 +78,7 @@ const Layout = () => {
           md: isSidebarOpen ? 'calc(100% - 220px)' : '100%',
         }}
       >
+        <CreateRootModal />
         <PanelContent>
           <PanelContainer>
             <Suspense

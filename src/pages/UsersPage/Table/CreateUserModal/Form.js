@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { Box, Flex, useColorModeValue, Link, useToast, SimpleGrid } from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { Formik, Form } from 'formik';
@@ -32,7 +32,7 @@ const CreateUserForm = ({ isOpen, onClose, createUser, requirements, refreshUser
   const { t } = useTranslation();
   const toast = useToast();
   const { user } = useAuth();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const textColor = useColorModeValue('gray.400', 'white');
 
   const createParameters = ({ name, description, email, currentPassword, note, userRole }) => {
@@ -57,7 +57,7 @@ const CreateUserForm = ({ isOpen, onClose, createUser, requirements, refreshUser
   };
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   return (
@@ -94,7 +94,7 @@ const CreateUserForm = ({ isOpen, onClose, createUser, requirements, refreshUser
           },
           onError: (e) => {
             toast({
-              id: createUuid(),
+              id: uuid(),
               title: t('common.error'),
               description: t('crud.error_create_obj', {
                 obj: t('user.title'),
@@ -113,20 +113,8 @@ const CreateUserForm = ({ isOpen, onClose, createUser, requirements, refreshUser
       {({ errors, touched }) => (
         <Form>
           <SimpleGrid minChildWidth="300px" spacing="20px">
-            <StringField
-              name="email"
-              label={t('common.email')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
-            <StringField
-              name="name"
-              label={t('common.name')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
+            <StringField name="email" label={t('common.email')} errors={errors} touched={touched} isRequired />
+            <StringField name="name" label={t('common.name')} errors={errors} touched={touched} isRequired />
             <SelectField
               name="userRole"
               label={t('user.role')}
@@ -151,21 +139,12 @@ const CreateUserForm = ({ isOpen, onClose, createUser, requirements, refreshUser
               isRequired
               hideButton
             />
-            <StringField
-              name="description"
-              label={t('common.description')}
-              errors={errors}
-              touched={touched}
-            />
+            <StringField name="description" label={t('common.description')} errors={errors} touched={touched} />
             <StringField name="note" label={t('common.note')} errors={errors} touched={touched} />
           </SimpleGrid>
           <Flex justifyContent="center" alignItems="center" maxW="100%" mt="50px" mb={6}>
             <Box w="100%">
-              <Link
-                href={`${secUrl}${requirements?.passwordPolicy}`}
-                isExternal
-                textColor={textColor}
-              >
+              <Link href={`${secUrl}${requirements?.passwordPolicy}`} isExternal textColor={textColor}>
                 {t('login.password_policy')}
                 <ExternalLinkIcon mx="2px" />
               </Link>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useToast, Tabs, TabList, TabPanels, TabPanel, Tab, SimpleGrid } from '@chakra-ui/react';
 import { Formik, Field, Form } from 'formik';
 import NotesTable from 'components/NotesTable';
@@ -13,7 +13,7 @@ import SelectWithSearchField from 'components/FormFields/SelectWithSearchField';
 import { useUpdateLocation } from 'hooks/Network/Locations';
 import SelectField from 'components/FormFields/SelectField';
 import CreatableSelectField from 'components/FormFields/CreatableSelectField';
-import AddressSearchField from 'components/FormFields/AddressSearchField';
+import AddressSearchField from 'components/CustomFields/AddressSearchField';
 import COUNTRY_LIST from 'constants/countryList';
 
 const propTypes = {
@@ -28,12 +28,12 @@ const propTypes = {
 const EditLocationForm = ({ editing, isOpen, onClose, refresh, location, formRef }) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const { data: entities } = useGetEntities({ t, toast });
   const updateLocation = useUpdateLocation({ id: location.id });
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   return (
@@ -105,7 +105,7 @@ const EditLocationForm = ({ editing, isOpen, onClose, refresh, location, formRef
             },
             onError: (e) => {
               toast({
-                id: createUuid(),
+                id: uuid(),
                 title: t('common.error'),
                 description: t('crud.error_update_obj', {
                   obj: t('locations.one'),
@@ -132,17 +132,8 @@ const EditLocationForm = ({ editing, isOpen, onClose, refresh, location, formRef
             <TabPanel>
               <Form>
                 <SimpleGrid minChildWidth="300px" spacing="20px" mb={8}>
-                  <StringField
-                    name="name"
-                    label={t('common.name')}
-                    isRequired
-                    isDisabled={!editing}
-                  />
-                  <StringField
-                    name="description"
-                    label={t('common.description')}
-                    isDisabled={!editing}
-                  />
+                  <StringField name="name" label={t('common.name')} isRequired isDisabled={!editing} />
+                  <StringField name="description" label={t('common.description')} isDisabled={!editing} />
                   <SelectWithSearchField
                     name="entity"
                     label={t('inventory.parent')}
@@ -196,53 +187,24 @@ const EditLocationForm = ({ editing, isOpen, onClose, refresh, location, formRef
                     isRequired
                     isDisabled={!editing}
                   />
-                  <StringField
-                    name="addressLineTwo"
-                    label={t('locations.address_line_two')}
-                    isDisabled={!editing}
-                  />
-                  <StringField
-                    name="city"
-                    label={t('locations.city')}
-                    isRequired
-                    isDisabled={!editing}
-                  />
-                  <StringField
-                    name="state"
-                    label={t('locations.state')}
-                    isRequired
-                    isDisabled={!editing}
-                  />
-                  <StringField
-                    name="postal"
-                    label={t('locations.postal')}
-                    isRequired
-                    isDisabled={!editing}
-                  />
+                  <StringField name="addressLineTwo" label={t('locations.address_line_two')} isDisabled={!editing} />
+                  <StringField name="city" label={t('locations.city')} isRequired isDisabled={!editing} />
+                  <StringField name="state" label={t('locations.state')} isRequired isDisabled={!editing} />
+                  <StringField name="postal" label={t('locations.postal')} isRequired isDisabled={!editing} />
                   <SelectField
                     name="country"
                     label={t('locations.country')}
                     options={COUNTRY_LIST}
                     isDisabled={!editing}
                   />
-                  <StringField
-                    name="buildingName"
-                    label={t('locations.building_name')}
-                    isDisabled={!editing}
-                  />
-                  <StringField
-                    name="geoCode"
-                    label={t('locations.geocode')}
-                    isDisabled={!editing}
-                  />
+                  <StringField name="buildingName" label={t('locations.building_name')} isDisabled={!editing} />
+                  <StringField name="geoCode" label={t('locations.geocode')} isDisabled={!editing} />
                 </SimpleGrid>
               </Form>
             </TabPanel>
             <TabPanel>
               <Field name="notes">
-                {({ field }) => (
-                  <NotesTable notes={field.value} setNotes={setFieldValue} isDisabled={!editing} />
-                )}
+                {({ field }) => <NotesTable notes={field.value} setNotes={setFieldValue} isDisabled={!editing} />}
               </Field>
             </TabPanel>
           </TabPanels>

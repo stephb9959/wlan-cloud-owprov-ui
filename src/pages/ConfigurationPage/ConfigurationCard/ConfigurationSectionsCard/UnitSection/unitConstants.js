@@ -8,8 +8,6 @@ export const DEFAULT_UNIT = {
   configuration: {
     name: '',
     location: '',
-    hostname: '',
-    timezone: '',
     'leds-active': true,
     'random-password': false,
   },
@@ -25,8 +23,8 @@ export const UNIT_SCHEMA = (t) =>
       location: string().required(t('form.required')).default(''),
       hostname: string()
         .test('test-hostname-network', t('form.invalid_hostname'), testAlphanumWithDash)
-        .default(''),
-      timezone: string().required(t('form.required')).default(''),
+        .default(undefined),
+      timezone: string().default(undefined),
       'leds-active': bool().default(true),
       'random-password': bool().default(false),
     }),

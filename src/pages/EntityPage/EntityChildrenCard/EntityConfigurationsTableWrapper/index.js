@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { EntityShape } from 'constants/propShapes';
 import { Box, useDisclosure } from '@chakra-ui/react';
 import { useQueryClient } from 'react-query';
 import ConfigurationsTable from 'components/Tables/ConfigurationTable';
-import ConfigurationInUseModal from 'components/Modals/ConfigurationInUseModal';
+import ConfigurationInUseModal from 'components/Modals/Configuration/ConfigurationInUseModal';
 import ConfigurationViewAffectedModal from 'components/Tables/ConfigurationTable/ConfigurationViewAffectedModal';
 import CreateConfigurationModal from 'components/Tables/ConfigurationTable/CreateConfigurationModal';
 import Actions from './Actions';
@@ -30,12 +30,7 @@ const EntityConfigurationsTableWrapper = ({ entity }) => {
 
   const actions = useCallback(
     (cell) => (
-      <Actions
-        key={createUuid()}
-        cell={cell.row}
-        openInUseModal={openInUseModal}
-        openAffectedModal={openAffectedModal}
-      />
+      <Actions key={uuid()} cell={cell.row} openInUseModal={openInUseModal} openAffectedModal={openAffectedModal} />
     ),
     [],
   );
@@ -49,11 +44,7 @@ const EntityConfigurationsTableWrapper = ({ entity }) => {
       </Box>
       <ConfigurationsTable select={entity.configurations} actions={actions} />
       <ConfigurationInUseModal isOpen={isInUseOpen} onClose={closeInUse} config={config} />
-      <ConfigurationViewAffectedModal
-        isOpen={isAffectedOpen}
-        onClose={closeAffected}
-        config={config}
-      />
+      <ConfigurationViewAffectedModal isOpen={isAffectedOpen} onClose={closeAffected} config={config} />
     </>
   );
 };

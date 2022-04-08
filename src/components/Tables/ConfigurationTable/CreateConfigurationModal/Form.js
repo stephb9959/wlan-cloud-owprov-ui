@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useToast, SimpleGrid } from '@chakra-ui/react';
 import { Formik } from 'formik';
 import { CreateConfigurationSchema } from 'constants/formSchemas';
@@ -39,7 +39,7 @@ const CreateConfigurationForm = ({
 }) => {
   const { t } = useTranslation();
   const toast = useToast();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const { data: entities } = useGetEntities({ t, toast });
   const { data: venues } = useGetVenues({ t, toast });
 
@@ -50,15 +50,7 @@ const CreateConfigurationForm = ({
     return `ven:${splitEntity[1]}`;
   };
 
-  const createParameters = ({
-    name,
-    description,
-    note,
-    deviceTypes,
-    entity,
-    rrm,
-    __CREATE_CONFIG,
-  }) => ({
+  const createParameters = ({ name, description, note, deviceTypes, entity, rrm, __CREATE_CONFIG }) => ({
     name,
     rrm,
     deviceTypes,
@@ -70,7 +62,7 @@ const CreateConfigurationForm = ({
   });
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   return (
@@ -108,7 +100,7 @@ const CreateConfigurationForm = ({
           },
           onError: (e) => {
             toast({
-              id: createUuid(),
+              id: uuid(),
               title: t('common.error'),
               description: t('crud.error_create_obj', {
                 obj: t('configurations.one'),
@@ -127,13 +119,7 @@ const CreateConfigurationForm = ({
       {({ errors, touched, setFieldValue }) => (
         <>
           <SimpleGrid minChildWidth="300px" spacing="20px" mb={6}>
-            <StringField
-              name="name"
-              label={t('common.name')}
-              errors={errors}
-              touched={touched}
-              isRequired
-            />
+            <StringField name="name" label={t('common.name')} errors={errors} touched={touched} isRequired />
             <MultiSelectField
               name="deviceTypes"
               label={t('configurations.device_types')}
@@ -189,20 +175,10 @@ const CreateConfigurationForm = ({
               isRequired
               w={28}
             />
-            <StringField
-              name="description"
-              label={t('common.description')}
-              errors={errors}
-              touched={touched}
-            />
+            <StringField name="description" label={t('common.description')} errors={errors} touched={touched} />
             <StringField name="note" label={t('common.note')} errors={errors} touched={touched} />
           </SimpleGrid>
-          <SpecialConfigurationManager
-            editing
-            isEnabledByDefault
-            isOnlySections
-            onChange={onConfigurationChange}
-          />
+          <SpecialConfigurationManager editing isEnabledByDefault isOnlySections onChange={onConfigurationChange} />
         </>
       )}
     </Formik>

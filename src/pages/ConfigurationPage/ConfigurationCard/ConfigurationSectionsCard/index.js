@@ -35,6 +35,7 @@ import RadiosSection from './RadiosSection';
 import { INTERFACES_SCHEMA } from './InterfaceSection/interfacesConstants';
 import InterfacesSection from './InterfaceSection';
 import ImportConfigurationButton from './ImportConfigurationButton';
+import useConfigurationTabs from './useConfigurationTabs';
 
 const propTypes = {
   configId: PropTypes.string.isRequired,
@@ -51,20 +52,7 @@ const getActiveConfigurations = (configurations) =>
   configurations.map((config) => Object.keys(JSON.parse(config.configuration))[0]);
 
 const getConfigurationData = (configurations, section) => {
-  const data = configurations.find(
-    (conf) => Object.keys(JSON.parse(conf.configuration))[0] === section,
-  );
-
-  if (section === 'metrics' || section === 'services') {
-    const activeSubs = Object.keys(JSON.parse(data.configuration)[section]);
-    return {
-      ...data,
-      configuration: {
-        ...JSON.parse(data.configuration)[section],
-        __selected_subcategories: activeSubs.filter((sub) => sub !== '__selected_subcategories'),
-      },
-    };
-  }
+  const data = configurations.find((conf) => Object.keys(JSON.parse(conf.configuration))[0] === section);
 
   if (section === 'interfaces') {
     return { ...data, configuration: JSON.parse(data.configuration).interfaces };
@@ -76,6 +64,7 @@ const getConfigurationData = (configurations, section) => {
 const ConfigurationSectionsCard = ({ configId, editing, setSections, label }) => {
   const { t } = useTranslation();
   const toast = useToast();
+  const { tabIndex, onTabChange, tabsWithNewConfiguration, tabsRemovedConfiguration } = useConfigurationTabs();
   const [globals, setGlobals] = useState({
     data: GLOBALS_SCHEMA(t).cast(),
     isDirty: false,
@@ -173,6 +162,7 @@ const ConfigurationSectionsCard = ({ configId, editing, setSections, label }) =>
       const newSubs = activeConfigurations;
       newSubs.push(sub);
       setActiveConfigurations([...newSubs]);
+      tabsWithNewConfiguration(sub, newSubs);
     },
     [activeConfigurations, setActiveConfigurations],
   );
@@ -229,6 +219,7 @@ const ConfigurationSectionsCard = ({ configId, editing, setSections, label }) =>
         });
       const newSubs = activeConfigurations.filter((conf) => conf !== sub);
       setActiveConfigurations([...newSubs]);
+      tabsRemovedConfiguration();
     },
     [activeConfigurations, setActiveConfigurations],
   );
@@ -353,11 +344,7 @@ const ConfigurationSectionsCard = ({ configId, editing, setSections, label }) =>
             isDisabled={isFetching}
           />
           <ImportConfigurationButton isDisabled={!editing} setConfig={importConfig} />
-          <AddSubsectionModal
-            editing={editing}
-            activeSubs={activeConfigurations}
-            addSub={addSubsection}
-          />
+          <AddSubsectionModal editing={editing} activeSubs={activeConfigurations} addSub={addSubsection} />
         </Box>
       </CardHeader>
       <CardBody>
@@ -368,24 +355,14 @@ const ConfigurationSectionsCard = ({ configId, editing, setSections, label }) =>
         ) : (
           <LoadingOverlay isLoading={isFetching}>
             <Box display="unset" position="unset" w="100%">
-              <Tabs variant="enclosed" w="100%">
+              <Tabs variant="enclosed" w="100%" index={tabIndex} onChange={onTabChange}>
                 <TabList>
-                  {activeConfigurations.includes('globals') && (
-                    <Tab>{t('configurations.globals')}</Tab>
-                  )}
+                  {activeConfigurations.includes('globals') && <Tab>{t('configurations.globals')}</Tab>}
                   {activeConfigurations.includes('unit') && <Tab>{t('configurations.unit')}</Tab>}
-                  {activeConfigurations.includes('metrics') && (
-                    <Tab>{t('configurations.metrics')}</Tab>
-                  )}
-                  {activeConfigurations.includes('services') && (
-                    <Tab>{t('configurations.services')}</Tab>
-                  )}
-                  {activeConfigurations.includes('radios') && (
-                    <Tab>{t('configurations.radios')}</Tab>
-                  )}
-                  {activeConfigurations.includes('interfaces') && (
-                    <Tab>{t('configurations.interfaces')}</Tab>
-                  )}
+                  {activeConfigurations.includes('metrics') && <Tab>{t('configurations.metrics')}</Tab>}
+                  {activeConfigurations.includes('services') && <Tab>{t('configurations.services')}</Tab>}
+                  {activeConfigurations.includes('radios') && <Tab>{t('configurations.radios')}</Tab>}
+                  {activeConfigurations.includes('interfaces') && <Tab>{t('configurations.interfaces')}</Tab>}
                 </TabList>
                 <TabPanels>
                   {activeConfigurations.includes('globals') && (

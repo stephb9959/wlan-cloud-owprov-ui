@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
   Box,
   CloseButton,
@@ -87,7 +87,7 @@ const FileInputModal = ({
 
   useEffect(() => {
     if (!isOpen) {
-      setRefreshId(createUuid());
+      setRefreshId(uuid());
       setTempValue('');
       setTempFilename('');
     }
@@ -95,12 +95,7 @@ const FileInputModal = ({
 
   return (
     <>
-      <FormControl
-        isInvalid={error && touched}
-        isRequired={isRequired}
-        isDisabled={isDisabled}
-        hidden={isHidden}
-      >
+      <FormControl isInvalid={error && touched} isRequired={isRequired} isDisabled={isDisabled} hidden={isHidden}>
         <FormLabel ms="4px" fontSize="md" fontWeight="normal">
           {label}
           <ConfigurationFieldExplanation definitionKey={definitionKey} />
@@ -126,10 +121,7 @@ const FileInputModal = ({
             title={label}
             right={
               <>
-                <SaveButton
-                  onClick={saveValue}
-                  isDisabled={tempValue.length === 0 || !test(tempValue)}
-                />
+                <SaveButton onClick={saveValue} isDisabled={tempValue.length === 0 || !test(tempValue)} />
                 <CloseButton ml={2} onClick={onClose} />
               </>
             }

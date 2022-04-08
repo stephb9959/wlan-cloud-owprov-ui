@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { useToast, Tabs, TabList, TabPanels, TabPanel, Tab, SimpleGrid } from '@chakra-ui/react';
 import { Formik, Field, Form } from 'formik';
 import NotesTable from 'components/NotesTable';
@@ -24,14 +24,12 @@ const EditSubscriberForm = ({ editing, subscriber, formRef, stopEditing }) => {
   const { t } = useTranslation();
   const toast = useToast();
   const { data: entities } = useGetEntities({ t, toast });
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const queryClient = useQueryClient();
-  const updateSubscriber = useMutation((subInfo) =>
-    axiosSec.put(`subuser/${subscriber?.id}`, subInfo),
-  );
+  const updateSubscriber = useMutation((subInfo) => axiosSec.put(`subuser/${subscriber?.id}`, subInfo));
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [editing]);
 
   return (
@@ -41,10 +39,7 @@ const EditSubscriberForm = ({ editing, subscriber, formRef, stopEditing }) => {
       key={formKey}
       initialValues={{ ...subscriber }}
       validationSchema={UpdateSubscriberSchema(t)}
-      onSubmit={(
-        { name, description, currentPassword, notes, owner },
-        { setSubmitting, resetForm },
-      ) =>
+      onSubmit={({ name, description, currentPassword, notes, owner }, { setSubmitting, resetForm }) =>
         updateSubscriber.mutateAsync(
           {
             name,
@@ -76,7 +71,7 @@ const EditSubscriberForm = ({ editing, subscriber, formRef, stopEditing }) => {
             },
             onError: (e) => {
               toast({
-                id: createUuid(),
+                id: uuid(),
                 title: t('common.error'),
                 description: t('crud.error_update_obj', {
                   obj: t('subscribers.one'),
@@ -104,23 +99,9 @@ const EditSubscriberForm = ({ editing, subscriber, formRef, stopEditing }) => {
               <Form>
                 <SimpleGrid minChildWidth="300px" spacing="20px">
                   <StringField name="email" label={t('common.email')} isDisabled isRequired />
-                  <StringField
-                    name="name"
-                    label={t('common.name')}
-                    isDisabled={!editing}
-                    isRequired
-                  />
-                  <StringField
-                    name="currentPassword"
-                    label={t('user.password')}
-                    isDisabled={!editing}
-                    hideButton
-                  />
-                  <StringField
-                    name="description"
-                    label={t('common.description')}
-                    isDisabled={!editing}
-                  />
+                  <StringField name="name" label={t('common.name')} isDisabled={!editing} isRequired />
+                  <StringField name="currentPassword" label={t('user.password')} isDisabled={!editing} hideButton />
+                  <StringField name="description" label={t('common.description')} isDisabled={!editing} />
                   <SelectWithSearchField
                     name="owner"
                     label={t('entities.one')}
@@ -139,9 +120,7 @@ const EditSubscriberForm = ({ editing, subscriber, formRef, stopEditing }) => {
             </TabPanel>
             <TabPanel>
               <Field name="notes">
-                {({ field }) => (
-                  <NotesTable notes={field.value} setNotes={setFieldValue} isDisabled={!editing} />
-                )}
+                {({ field }) => <NotesTable notes={field.value} setNotes={setFieldValue} isDisabled={!editing} />}
               </Field>
             </TabPanel>
           </TabPanels>

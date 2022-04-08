@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormControl, FormErrorMessage, FormLabel, Select } from '@chakra-ui/react';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import isEqual from 'react-fast-compare';
 import ConfigurationFieldExplanation from '../ConfigurationFieldExplanation';
 
@@ -50,12 +50,7 @@ const FastSelectInput = ({
   w,
   definitionKey,
 }) => (
-  <FormControl
-    isInvalid={error && touched}
-    isRequired={isRequired}
-    isDisabled={isDisabled}
-    hidden={isHidden}
-  >
+  <FormControl isInvalid={error && touched} isRequired={isRequired} isDisabled={isDisabled} hidden={isHidden}>
     <FormLabel ms="4px" fontSize="md" fontWeight="normal" _disabled={{ opacity: 0.8 }}>
       {label} <ConfigurationFieldExplanation definitionKey={definitionKey} />
     </FormLabel>
@@ -69,7 +64,7 @@ const FastSelectInput = ({
       w={w}
     >
       {options.map((option) => (
-        <option value={option.value} key={createUuid()}>
+        <option value={option.value} key={uuid()}>
           {option.label}
         </option>
       ))}

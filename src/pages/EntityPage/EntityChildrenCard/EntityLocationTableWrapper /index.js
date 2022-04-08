@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { EntityShape } from 'constants/propShapes';
 import { Box, useDisclosure } from '@chakra-ui/react';
 import { useQueryClient } from 'react-query';
@@ -32,14 +32,7 @@ const EntityLocationTableWrapper = ({ entity }) => {
   };
 
   const actions = useCallback(
-    (cell) => (
-      <Actions
-        key={createUuid()}
-        cell={cell.row}
-        refreshEntity={refreshEntity}
-        openEditModal={openEditModal}
-      />
-    ),
+    (cell) => <Actions key={uuid()} cell={cell.row} refreshEntity={refreshEntity} openEditModal={openEditModal} />,
     [refreshId],
   );
 
@@ -48,18 +41,8 @@ const EntityLocationTableWrapper = ({ entity }) => {
       <Box textAlign="right" mb={2}>
         <CreateLocationModal refresh={refreshEntity} entityId={entity.id} />
       </Box>
-      <LocationTable
-        select={entity.locations}
-        actions={actions}
-        refreshId={refreshId}
-        ignoredColumns={['entity']}
-      />
-      <EditLocationModal
-        isOpen={isEditOpen}
-        onClose={closeEdit}
-        location={location}
-        refresh={refetchLocations}
-      />
+      <LocationTable select={entity.locations} actions={actions} refreshId={refreshId} ignoredColumns={['entity']} />
+      <EditLocationModal isOpen={isEditOpen} onClose={closeEdit} location={location} refresh={refetchLocations} />
     </>
   );
 };

@@ -1,15 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  Alert,
-  AlertIcon,
-  Heading,
-  Box,
-} from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalBody, Alert, AlertIcon, Heading, Box } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import CloseButton from 'components/Buttons/CloseButton';
 import ModalHeader from 'components/ModalHeader';
@@ -38,7 +29,7 @@ const ConfigurationPushModal = ({ isOpen, onClose, pushResult }) => {
         <ModalBody>
           <Alert status={pushResult?.errorCode !== 0 ? 'error' : 'success'}>
             <AlertIcon />
-            {pushResult?.result?.errorCode !== 0
+            {pushResult?.errorCode !== 0
               ? t('configurations.push_configuration_explanation', {
                   code: pushResult?.errorCode ?? 0,
                 })

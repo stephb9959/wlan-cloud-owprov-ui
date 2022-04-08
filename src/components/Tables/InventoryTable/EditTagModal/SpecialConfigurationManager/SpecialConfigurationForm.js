@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { Formik } from 'formik';
 import { SimpleGrid } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
@@ -22,10 +22,10 @@ const defaultProps = {
 
 const SpecialConfigurationForm = ({ editing, configuration, formRef }) => {
   const { t } = useTranslation();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [editing]);
 
   return (
@@ -71,11 +71,7 @@ const SpecialConfigurationForm = ({ editing, configuration, formRef }) => {
           isDisabled={!editing}
           w={36}
         />
-        <ToggleField
-          name="firmwareRCOnly"
-          label={t('configurations.rc_only')}
-          isDisabled={!editing}
-        />
+        <ToggleField name="firmwareRCOnly" label={t('configurations.rc_only')} isDisabled={!editing} />
       </SimpleGrid>
     </Formik>
   );

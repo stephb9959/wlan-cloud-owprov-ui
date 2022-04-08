@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { Handle } from 'react-flow-renderer';
 import {
   Box,
@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import isEqual from 'react-fast-compare';
 import { WifiHigh } from 'phosphor-react';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const propTypes = {
   data: PropTypes.shape({
@@ -31,6 +31,7 @@ const propTypes = {
 };
 
 const EntityNode = ({ data, isConnectable }) => {
+  const { t } = useTranslation();
   const bgColor = useColorModeValue('teal.200', 'teal.400');
 
   if (data?.id === '0000-0000-0000') {
@@ -38,7 +39,7 @@ const EntityNode = ({ data, isConnectable }) => {
       <>
         <Box width="200px" bgColor="black" p="4px" borderRadius={4} textColor="white">
           <Center>
-            <Heading size="md" id={createUuid()}>
+            <Heading size="md" id={uuid()}>
               {data.label}
             </Heading>
           </Center>
@@ -49,57 +50,30 @@ const EntityNode = ({ data, isConnectable }) => {
             </Heading>
           </Center>
         </Box>
-        <Handle
-          type="source"
-          position="bottom"
-          id="a"
-          style={{ background: '#555' }}
-          isConnectable={isConnectable}
-        />
+        <Handle type="source" position="bottom" id="a" style={{ background: '#555' }} isConnectable={isConnectable} />
       </>
     );
   }
 
   const hasLowerHandle = useCallback(
-    () =>
-      data.details.children.length > 0 ||
-      data.details.venues.length > 0 ||
-      data.details.devices.length > 0,
+    () => data.details.children.length > 0 || data.details.venues.length > 0 || data.details.devices.length > 0,
     [],
   );
 
   return (
     <>
-      <Handle
-        type="target"
-        position="top"
-        style={{ background: '#555' }}
-        isConnectable={isConnectable}
-      />
+      <Handle type="target" position="top" style={{ background: '#555' }} isConnectable={isConnectable} />
       <Popover isLazy trigger="hover">
         <PopoverTrigger>
-          <Box
-            width="200px"
-            bgColor={bgColor}
-            p="4px"
-            borderRadius={4}
-            pointerEvents="all"
-            id="testotest"
-          >
+          <Box width="200px" bgColor={bgColor} p="4px" borderRadius={4} pointerEvents="all" id="testotest">
             <Center>
-              <Heading size="md" id={createUuid()}>
+              <Heading size="md" id={uuid()}>
                 {data.label}
               </Heading>
             </Center>
             <Center>
               <WifiHigh size={20} />
-              <Heading
-                size="sm"
-                ml={1}
-                textOverflow="ellipsis"
-                overflow="hidden"
-                whiteSpace="nowrap"
-              >
+              <Heading size="sm" ml={1} textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
                 {data.details.cumulativeDevices}
               </Heading>
             </Center>
@@ -111,9 +85,7 @@ const EntityNode = ({ data, isConnectable }) => {
             <PopoverCloseButton />
             <PopoverHeader>{data.label}</PopoverHeader>
             <PopoverBody>
-              {data.details.description !== '' && (
-                <Text fontStyle="italic">{data.details.description}</Text>
-              )}
+              {data.details.description !== '' && <Text fontStyle="italic">{data.details.description}</Text>}
               <Text>
                 {data.details.cumulativeDevices} {t('map.cumulative_devices')}
               </Text>
@@ -132,13 +104,7 @@ const EntityNode = ({ data, isConnectable }) => {
         </Portal>
       </Popover>
       {hasLowerHandle() && (
-        <Handle
-          type="source"
-          position="bottom"
-          id="a"
-          style={{ background: '#555' }}
-          isConnectable={isConnectable}
-        />
+        <Handle type="source" position="bottom" id="a" style={{ background: '#555' }} isConnectable={isConnectable} />
       )}
     </>
   );

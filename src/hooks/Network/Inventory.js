@@ -1,16 +1,19 @@
 import { useMutation, useQuery } from 'react-query';
 import { axiosProv } from 'utils/axiosInstances';
 
-export const useGetInventoryCount = ({ t, toast, enabled, onlyUnassigned = false }) =>
+export const useGetInventoryCount = ({ t, toast, enabled, onlyUnassigned = false, isSubscribersOnly }) =>
   useQuery(
     ['get-inventory-count', onlyUnassigned],
     () =>
       axiosProv
-        .get(`inventory?countOnly=true${onlyUnassigned ? '&unassigned=true' : ''}`)
+        .get(
+          `inventory?countOnly=true${onlyUnassigned ? '&unassigned=true' : ''}${
+            isSubscribersOnly ? '&subscribersOnly=true' : ''
+          }`,
+        )
         .then(({ data }) => data.count),
     {
       enabled,
-      staleTime: 30000,
       onError: (e) => {
         if (!toast.isActive('inventory-fetching-error'))
           toast({
@@ -38,6 +41,7 @@ export const useGetInventoryTags = ({
   enabled,
   count,
   onlyUnassigned = false,
+  isSubscribersOnly,
 }) => {
   if (tagSelect !== undefined && tagSelect !== null) {
     return useQuery(
@@ -45,7 +49,11 @@ export const useGetInventoryTags = ({
       () =>
         tagSelect.length > 0
           ? axiosProv
-              .get(`inventory?withExtendedInfo=true&select=${tagSelect}`)
+              .get(
+                `inventory?withExtendedInfo=true&select=${tagSelect}${
+                  isSubscribersOnly ? '&subscribersOnly=true' : ''
+                }`,
+              )
               .then(({ data }) => data.taglist)
           : [],
       {
@@ -73,10 +81,7 @@ export const useGetInventoryTags = ({
   if (owner !== undefined && owner !== null) {
     return useQuery(
       ['get-inventory-with-owner', owner],
-      () =>
-        axiosProv
-          .get(`inventory?serialOnly=true&subscriber=${owner}`)
-          .then(({ data }) => data.serialNumbers),
+      () => axiosProv.get(`inventory?serialOnly=true&subscriber=${owner}`).then(({ data }) => data.serialNumbers),
       {
         enabled,
         onError: (e) => {
@@ -105,7 +110,7 @@ export const useGetInventoryTags = ({
         .get(
           `inventory?withExtendedInfo=true&limit=${pageInfo?.limit ?? 10}&offset=${
             (pageInfo?.limit ?? 10) * (pageInfo?.index ?? 1)
-          }${onlyUnassigned ? '&unassigned=true' : ''}`,
+          }${onlyUnassigned ? '&unassigned=true' : ''}${isSubscribersOnly ? '&subscribersOnly=true' : ''}`,
         )
         .then(({ data }) => data.taglist),
     {
@@ -158,8 +163,7 @@ export const useGetTag = ({ t, toast, enabled, serialNumber }) =>
 export const useGetComputedConfiguration = ({ t, toast, enabled, serialNumber }) =>
   useQuery(
     ['get-tag-computed-configuration', serialNumber],
-    () =>
-      axiosProv.get(`inventory/${serialNumber}?config=true&explain=true`).then(({ data }) => data),
+    () => axiosProv.get(`inventory/${serialNumber}?config=true&explain=true`).then(({ data }) => data),
     {
       enabled,
       onError: (e) => {
@@ -183,8 +187,7 @@ export const useGetComputedConfiguration = ({ t, toast, enabled, serialNumber })
 export const usePushConfig = ({ t, toast, onSuccess }) =>
   useMutation(
     ['apply-tag-configuration'],
-    (serialNumber) =>
-      axiosProv.get(`inventory/${serialNumber}?applyConfiguration=true`).then(({ data }) => data),
+    (serialNumber) => axiosProv.get(`inventory/${serialNumber}?applyConfiguration=true`).then(({ data }) => data),
     {
       onSuccess,
       onError: (e) => {
@@ -227,9 +230,7 @@ const claimDevices = async (serialNumbers, entity, isVenue) => {
   );
 
   const unassignResults = await Promise.all(unassignPromises);
-  const unassignErrors = await unassignResults
-    .filter((res) => res.error)
-    .map((res) => res.serialNumber);
+  const unassignErrors = await unassignResults.filter((res) => res.error).map((res) => res.serialNumber);
 
   const claimResults = await Promise.all(addPromises);
   const claimErrors = claimResults.filter((res) => res.error).map((res) => res.serialNumber);

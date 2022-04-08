@@ -7,6 +7,20 @@ export const CREATE_INTERFACE_SCHEMA = (t) =>
     role: string().required(t('form.required')).default('upstream'),
   });
 
+export const INTERFACE_SSID_RATE_LIMIT_SCHEMA = (t, useDefault = false) => {
+  const shape = object()
+    .shape({
+      'ingress-rate': number().required(t('form.required')).moreThan(-1).lessThan(65535).integer().default(0),
+      'egress-rate': number().required(t('form.required')).moreThan(-1).lessThan(65535).integer().default(0),
+    })
+    .default({
+      'ingress-rate': 0,
+      'egress-rate': 0,
+    });
+
+  return useDefault ? shape : shape.nullable().default(undefined);
+};
+
 export const INTERFACE_SSID_RADIUS_LOCAL_USER_SCHEMA = (t, useDefault = false) => {
   const shape = object().shape({
     mac: string()
@@ -14,18 +28,11 @@ export const INTERFACE_SSID_RADIUS_LOCAL_USER_SCHEMA = (t, useDefault = false) =
       .test('services.ieee8021x.user.mac.length', t('form.invalid_mac_uc'), testUcMac)
       .default(''),
     'user-name': string().required(t('form.required')).default(''),
-    'vlan-id': number()
-      .required(t('form.required'))
-      .moreThan(-1)
-      .lessThan(4097)
-      .integer()
-      .default(1),
+    'vlan-id': number().required(t('form.required')).moreThan(-1).lessThan(4097).integer().default(1),
     password: string()
       .required(t('form.required'))
-      .test(
-        'services.ieee8021x.user.password.length',
-        t('form.min_max_string', { min: 8, max: 63 }),
-        (val) => testLength({ val, min: 8, max: 63 }),
+      .test('services.ieee8021x.user.password.length', t('form.min_max_string', { min: 8, max: 63 }), (val) =>
+        testLength({ val, min: 8, max: 63 }),
       )
       .default(''),
   });
@@ -59,12 +66,7 @@ export const INTERFACE_SSID_RADIUS_SCHEMA = (t, useDefault = false) => {
       authentication: object()
         .shape({
           host: string().required(t('form.required')).default('192.168.178.192'),
-          port: number()
-            .required(t('form.required'))
-            .positive()
-            .lessThan(4050)
-            .integer()
-            .default(1812),
+          port: number().required(t('form.required')).positive().lessThan(4050).integer().default(1812),
           secret: string().required(t('form.required')).min(8).max(63).default('YOUR_SECRET'),
         })
         .nullable()
@@ -72,12 +74,7 @@ export const INTERFACE_SSID_RADIUS_SCHEMA = (t, useDefault = false) => {
       accounting: object()
         .shape({
           host: string().required(t('form.required')).default('192.168.178.192'),
-          port: number()
-            .required(t('form.required'))
-            .positive()
-            .lessThan(4050)
-            .integer()
-            .default(1813),
+          port: number().required(t('form.required')).positive().lessThan(4050).integer().default(1813),
           secret: string().required(t('form.required')).min(8).max(63).default('YOUR_SECRET'),
         })
         .nullable()
@@ -85,12 +82,7 @@ export const INTERFACE_SSID_RADIUS_SCHEMA = (t, useDefault = false) => {
       'dynamic-authorization': object()
         .shape({
           host: string().required(t('form.required')).default('YOUR_SECRET'),
-          port: number()
-            .required(t('form.required'))
-            .positive()
-            .lessThan(4050)
-            .integer()
-            .default(1813),
+          port: number().required(t('form.required')).positive().lessThan(4050).integer().default(1813),
           secret: string().required(t('form.required')).min(8).max(63).default(''),
         })
         .nullable()
@@ -115,10 +107,9 @@ export const INTERFACE_SSID_ENCRYPTION_SCHEMA = (t, useDefault = false) => {
       proto: string().required(t('form.required')).default('psk'),
       ieee80211w: string().required(t('form.required')).default('disabled'),
       key: string()
-        .when('proto', {
-          is: (v) => keyProtos.includes(v),
-          then: string().required(t('form.required')).min(8).max(63).default(''),
-          otherwise: string().nullable(),
+        .test('encryptionKeyTest', t('form.min_max_string', { min: 8, max: 63 }), (v, { from }) => {
+          if (!keyProtos.includes(from[0].value.proto) || from[1].value.radius !== undefined) return true;
+          return v.length >= 8 && v.length <= 63;
         })
         .default(''),
     })
@@ -137,15 +128,13 @@ export const INTERFACE_SSID_ROAMING_SCHEMA = (t, useDefault = false) => {
       'message-exchange': string().required(t('form.required')).default('ds'),
       'generate-psk': bool().required(t('form.required')).default(false),
       'domain-identifier': string().required(t('form.required')).default(''),
-      'pmk-r0-key-holder': string().required(t('form.required')).default(''),
-      'pmk-r1-key-holder': string().required(t('form.required')).default(''),
+      'pmk-r0-key-holder': string().default(undefined),
+      'pmk-r1-key-holder': string().default(undefined),
     })
     .default({
       'message-exchange': 'ds',
       'generate-psk': false,
       'domain-identifier': '',
-      'pmk-r0-key-holder': '',
-      'pmk-r1-key-holder': '',
     });
 
   return useDefault ? shape : shape.nullable().default(undefined);
@@ -175,11 +164,7 @@ export const INTERFACE_SSID_SCHEMA = (t, useDefault = false) => {
   const shape = object().shape({
     name: string().required(t('form.required')).default('YOUR_SSID'),
     purpose: string().default(undefined),
-    'wifi-bands': array()
-      .of(string())
-      .required(t('form.required'))
-      .min(1, t('form.required'))
-      .default(['2G', '5G']),
+    'wifi-bands': array().of(string()).required(t('form.required')).min(1, t('form.required')).default(['2G', '5G']),
     'bss-mode': string().required(t('form.required')).default('ap'),
     'hidden-ssid': bool().required(t('form.required')).default(false),
     'isolate-clients': bool().required(t('form.required')).default(false),
@@ -187,16 +172,12 @@ export const INTERFACE_SSID_SCHEMA = (t, useDefault = false) => {
     'broadcast-time': bool().default(undefined),
     'unicast-conversion': bool().default(undefined),
     services: array().of(string()).default([]),
-    'maximum-clients': number()
-      .required(t('form.required'))
-      .moreThan(0)
-      .lessThan(65535)
-      .integer()
-      .default(64),
+    'maximum-clients': number().required(t('form.required')).moreThan(0).lessThan(65535).integer().default(64),
     'proxy-arp': bool().default(undefined),
     'disassoc-low-ack': bool().default(undefined),
     'vendor-elements': string(),
     encryption: INTERFACE_SSID_ENCRYPTION_SCHEMA(t, useDefault),
+    'rate-limit': INTERFACE_SSID_RATE_LIMIT_SCHEMA(t),
     rrm: INTERFACE_SSID_RRM_SCHEMA(t),
     roaming: INTERFACE_SSID_ROAMING_SCHEMA(t),
     radius: INTERFACE_SSID_RADIUS_SCHEMA(t),
@@ -211,13 +192,12 @@ export const INTERFACE_IPV4_DHCP_SCHEMA = (t, useDefault = false) => {
       'lease-first': number().required(t('form.required')).positive().integer().default(1),
       'lease-count': number().required(t('form.required')).positive().integer().default(1),
       'lease-time': string().required(t('form.required')).default('6h'),
-      'relay-server': string().required(t('form.required')).default(''),
+      'relay-server': string().default(undefined),
     })
     .default({
       'lease-first': 1,
       'lease-count': 1,
       'lease-time': '6h',
-      'relay-server': '',
     });
 
   return useDefault ? shape : shape.nullable().default(undefined);
@@ -244,12 +224,7 @@ export const INTERFACE_IPV4_DHCP_LEASE_SCHEMA = (t, useDefault = false) => {
 export const INTERFACE_BRIDGE_SCHEMA = (t, useDefault = false) => {
   const shape = object()
     .shape({
-      mtu: number()
-        .required(t('form.required'))
-        .moreThan(255)
-        .lessThan(65535)
-        .integer()
-        .default(1500),
+      mtu: number().required(t('form.required')).moreThan(255).lessThan(65535).integer().default(1500),
       'tx-queue-len': number().required(t('form.required')).positive().integer().default(5000),
       'isolate-ports': bool().required(t('form.required')).default(false),
     })
@@ -279,11 +254,7 @@ export const INTERFACE_IPV4_SCHEMA = (t, useDefault = false) => {
     'use-dns': array().when('addressing', {
       is: 'dynamic',
       then: array().nullable(),
-      otherwise: array()
-        .of(string())
-        .required(t('form.required'))
-        .min(1, t('form.required'))
-        .default([]),
+      otherwise: array().of(string()).required(t('form.required')).min(1, t('form.required')).default([]),
     }),
     dhcp: INTERFACE_IPV4_DHCP_SCHEMA(t, useDefault),
     'dhcp-lease': INTERFACE_IPV4_DHCP_LEASE_SCHEMA(t, useDefault),
@@ -302,12 +273,7 @@ export const INTERFACE_TUNNEL_SCHEMA = (t, useDefault = false) => {
     }),
     'peer-port': number().when('proto', {
       is: 'vxlan',
-      then: number()
-        .required(t('form.required'))
-        .moreThan(0)
-        .lessThan(65535)
-        .integer()
-        .default(4700),
+      then: number().required(t('form.required')).moreThan(0).lessThan(65535).integer().default(4700),
       otherwise: number().nullable(),
     }),
     server: string().when('proto', {
@@ -361,7 +327,7 @@ export const SINGLE_INTERFACE_SCHEMA = (
           .shape({ addressing: string().required(t('form.required')) })
           .default({ addressing: 'dynamic' })
       : INTERFACE_IPV4_SCHEMA(t, useDefault),
-    tunnel: INTERFACE_TUNNEL_SCHEMA(t, useDefault),
+    tunnel: INTERFACE_TUNNEL_SCHEMA(t, useDefault).default(undefined),
     ssids: array().of(INTERFACE_SSID_SCHEMA(t, useDefault)).default([]),
     'hostapd-bss-raw': array().of(string()).default(undefined),
   });

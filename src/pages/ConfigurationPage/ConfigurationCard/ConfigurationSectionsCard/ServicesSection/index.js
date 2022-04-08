@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { ConfigurationSectionShape } from 'constants/propShapes';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,7 @@ const propTypes = {
 
 const ServicesSection = ({ editing, setSection, sectionInformation, removeSub }) => {
   const { t } = useTranslation();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
 
   const sectionRef = useCallback(
     (node) => {
@@ -64,19 +64,18 @@ const ServicesSection = ({ editing, setSection, sectionInformation, removeSub })
 
   const isSubSectionActive = useCallback(
     (sub) =>
-      sectionInformation.data.configuration.__selected_subcategories.includes(sub) &&
-      sectionInformation.data.configuration !== undefined,
+      sectionInformation.data.configuration !== undefined && sectionInformation.data.configuration[sub] !== undefined,
     [sectionInformation.data],
   );
 
   const onSubsectionsChange = useCallback(
     (newSubsections, setFieldValue) => {
-      const toRemove = sectionInformation.data.configuration.__selected_subcategories.filter(
-        (sub) => !newSubsections.includes(sub),
+      const alreadyActive = Object.keys(sectionInformation.data.configuration).filter(
+        (sub) => sub !== '__selected_subcategories' && sectionInformation.data.configuration[sub] !== undefined,
       );
-      const toAdd = newSubsections.filter(
-        (sub) => !sectionInformation.data.configuration.__selected_subcategories.includes(sub),
-      );
+
+      const toRemove = alreadyActive.filter((sub) => !newSubsections.includes(sub));
+      const toAdd = newSubsections.filter((sub) => !alreadyActive.includes(sub));
 
       for (let i = 0; i < toRemove.length; i += 1) {
         setFieldValue(`configuration.${toRemove[i]}`, undefined);
@@ -84,8 +83,6 @@ const ServicesSection = ({ editing, setSection, sectionInformation, removeSub })
       for (let i = 0; i < toAdd.length; i += 1) {
         setFieldValue(`configuration.${toAdd[i]}`, getSubSectionDefaults(t, toAdd[i]));
       }
-
-      setFieldValue('configuration.__selected_subcategories', newSubsections);
     },
     [sectionInformation.data],
     isEqual,
@@ -94,7 +91,7 @@ const ServicesSection = ({ editing, setSection, sectionInformation, removeSub })
   const removeUnit = () => removeSub('services');
 
   useEffect(() => {
-    if (!editing) setFormKey(createUuid());
+    if (!editing) setFormKey(uuid());
   }, [editing]);
 
   return (

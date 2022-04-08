@@ -1,28 +1,15 @@
 import React from 'react';
 import { Icon } from '@chakra-ui/react';
-import {
-  AddressBook,
-  Barcode,
-  Books,
-  Info,
-  MapPin,
-  Tag,
-  TreeStructure,
-  Users,
-  UsersThree,
-} from 'phosphor-react';
+import { Info, Storefront, Tag, TreeStructure, UsersThree } from 'phosphor-react';
 
 const AccountPage = React.lazy(() => import('pages/AccountPage'));
-const ContactsPage = React.lazy(() => import('pages/ContactsPage'));
 const ConfigurationPage = React.lazy(() => import('pages/ConfigurationPage'));
-const ConfigurationsPage = React.lazy(() => import('pages/ConfigurationsPage'));
 const EntityPage = React.lazy(() => import('pages/EntityPage'));
 const InventoryPage = React.lazy(() => import('pages/InventoryPage'));
-const LocationsPage = React.lazy(() => import('pages/LocationsPage'));
 const MapPage = React.lazy(() => import('pages/MapPage'));
-const ResourcesPage = React.lazy(() => import('pages/ResourcesPage'));
+const OperatorPage = React.lazy(() => import('pages/OperatorPage'));
+const OperatorsPage = React.lazy(() => import('pages/OperatorsPage'));
 const SubscriberPage = React.lazy(() => import('pages/SubscriberPage'));
-const SubscribersPage = React.lazy(() => import('pages/SubscribersPage'));
 const SystemPage = React.lazy(() => import('pages/SystemPage'));
 const UsersPage = React.lazy(() => import('pages/UsersPage'));
 const VenuePage = React.lazy(() => import('pages/VenuePage'));
@@ -34,12 +21,7 @@ export default [
     name: 'entities.title',
     navName: 'entities.one',
     icon: (active) => (
-      <Icon
-        as={TreeStructure}
-        color="inherit"
-        h={active ? '32px' : '24px'}
-        w={active ? '32px' : '24px'}
-      />
+      <Icon as={TreeStructure} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
     isEntity: true,
     component: EntityPage,
@@ -48,77 +30,25 @@ export default [
     authorized: ['root', 'partner', 'admin', 'csr', 'system'],
     path: '/',
     name: 'inventory.title',
-    icon: (active) => (
-      <Icon as={Tag} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
-    ),
+    icon: (active) => <Icon as={Tag} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />,
     component: InventoryPage,
   },
   {
+    hidden: true,
     authorized: ['root', 'partner', 'admin', 'csr', 'system'],
-    path: '/contacts',
-    name: 'contacts.other',
+    path: '/operators',
+    name: 'operator.other',
     icon: (active) => (
-      <Icon
-        as={UsersThree}
-        color="inherit"
-        h={active ? '32px' : '24px'}
-        w={active ? '32px' : '24px'}
-      />
+      <Icon as={Storefront} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
-    component: ContactsPage,
-  },
-  {
-    authorized: ['root', 'partner', 'admin', 'csr', 'system'],
-    path: '/locations',
-    name: 'locations.other',
-    icon: (active) => (
-      <Icon as={MapPin} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
-    ),
-    component: LocationsPage,
-  },
-  {
-    authorized: ['root', 'partner', 'admin', 'csr', 'system'],
-    path: '/configurations',
-    name: 'configurations.title',
-    icon: (active) => (
-      <Icon
-        as={Barcode}
-        color="inherit"
-        h={active ? '32px' : '24px'}
-        w={active ? '32px' : '24px'}
-      />
-    ),
-    component: ConfigurationsPage,
-  },
-  {
-    authorized: ['root', 'partner', 'admin', 'csr', 'system'],
-    path: '/resources',
-    name: 'resources.title',
-    icon: (active) => (
-      <Icon as={Books} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
-    ),
-    component: ResourcesPage,
-  },
-  {
-    authorized: ['root', 'partner', 'admin', 'csr', 'system'],
-    path: '/subscribers',
-    name: 'subscribers.title',
-    icon: (active) => (
-      <Icon
-        as={AddressBook}
-        color="inherit"
-        h={active ? '32px' : '24px'}
-        w={active ? '32px' : '24px'}
-      />
-    ),
-    component: SubscribersPage,
+    component: OperatorsPage,
   },
   {
     authorized: ['root', 'partner', 'admin', 'csr', 'system'],
     path: '/users',
     name: 'users.title',
     icon: (active) => (
-      <Icon as={Users} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
+      <Icon as={UsersThree} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
     component: UsersPage,
   },
@@ -126,9 +56,7 @@ export default [
     authorized: ['root', 'partner', 'admin'],
     path: '/system',
     name: 'system.title',
-    icon: (active) => (
-      <Icon as={Info} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
-    ),
+    icon: (active) => <Icon as={Info} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />,
     component: SystemPage,
   },
   {
@@ -138,12 +66,7 @@ export default [
     name: 'venues.title',
     navName: 'venues.one',
     icon: (active) => (
-      <Icon
-        as={TreeStructure}
-        color="inherit"
-        h={active ? '32px' : '24px'}
-        w={active ? '32px' : '24px'}
-      />
+      <Icon as={TreeStructure} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
     isEntity: true,
     component: VenuePage,
@@ -154,7 +77,7 @@ export default [
     path: '/account',
     name: 'account.title',
     icon: (active) => (
-      <Icon as={Users} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
+      <Icon as={UsersThree} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
     component: AccountPage,
   },
@@ -164,9 +87,19 @@ export default [
     path: '/configuration/:id',
     name: 'configurations.one',
     icon: (active) => (
-      <Icon as={Users} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
+      <Icon as={UsersThree} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
     component: ConfigurationPage,
+  },
+  {
+    hidden: true,
+    authorized: ['root', 'partner', 'admin', 'csr', 'system'],
+    path: '/operators/:id',
+    name: 'operator.one',
+    icon: (active) => (
+      <Icon as={UsersThree} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
+    ),
+    component: OperatorPage,
   },
   {
     hidden: true,
@@ -174,7 +107,7 @@ export default [
     path: '/subscriber/:id',
     name: 'subscribers.one',
     icon: (active) => (
-      <Icon as={Users} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
+      <Icon as={UsersThree} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
     component: SubscriberPage,
   },
@@ -184,7 +117,7 @@ export default [
     path: '/map',
     name: 'common.map',
     icon: (active) => (
-      <Icon as={Users} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
+      <Icon as={UsersThree} color="inherit" h={active ? '32px' : '24px'} w={active ? '32px' : '24px'} />
     ),
     component: MapPage,
   },

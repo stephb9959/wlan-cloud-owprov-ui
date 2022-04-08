@@ -1,5 +1,6 @@
 # System
 replicaCount: 1
+revisionHistoryLimit: 2
 
 nameOverride: ""
 fullnameOverride: ""
@@ -12,7 +13,7 @@ images:
 
 services:
   owprovui:
-    type: ClusterIP
+    type: NodePort
     ports:
       http:
         servicePort: 80
@@ -48,6 +49,7 @@ ingresses:
     - chart-example.local
     paths:
     - path: /
+      pathType: ImplementationSpecific
       serviceName: owprovui
       servicePort: http
 
@@ -69,7 +71,8 @@ tolerations: []
 
 affinity: {}
 
+podAnnotations: {}
+
 # Application
 public_env_variables:
-  DEFAULT_UCENTRALSEC_URL: https://ucentral.dpaas.arilia.com:16001
-  ALLOW_UCENTRALSEC_CHANGE: false
+  REACT_APP_UCENTRALSEC_URL: https://ucentral.dpaas.arilia.com:16001

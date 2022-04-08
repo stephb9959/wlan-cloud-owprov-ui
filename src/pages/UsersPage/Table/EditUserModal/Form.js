@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { v4 as createUuid } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
   Box,
   Flex,
@@ -69,7 +69,7 @@ const UpdateUserForm = ({
   const { t } = useTranslation();
   const toast = useToast();
   const { user } = useAuth();
-  const [formKey, setFormKey] = useState(createUuid());
+  const [formKey, setFormKey] = useState(uuid());
   const textColor = useColorModeValue('gray.400', 'white');
 
   const formIsDisabled = () => {
@@ -84,7 +84,7 @@ const UpdateUserForm = ({
   };
 
   useEffect(() => {
-    setFormKey(createUuid());
+    setFormKey(uuid());
   }, [isOpen]);
 
   return (
@@ -94,10 +94,7 @@ const UpdateUserForm = ({
       key={formKey}
       initialValues={userToUpdate}
       validationSchema={CreateUserSchema}
-      onSubmit={(
-        { name, description, currentPassword, userRole, notes },
-        { setSubmitting, resetForm },
-      ) =>
+      onSubmit={({ name, description, currentPassword, userRole, notes }, { setSubmitting, resetForm }) =>
         updateUser.mutateAsync(
           {
             name,
@@ -126,7 +123,7 @@ const UpdateUserForm = ({
             },
             onError: (e) => {
               toast({
-                id: createUuid(),
+                id: uuid(),
                 title: t('common.error'),
                 description: t('crud.error_update_obj', {
                   obj: t('user.title'),
@@ -207,25 +204,14 @@ const UpdateUserForm = ({
               </TabPanel>
               <TabPanel>
                 <Field name="notes">
-                  {({ field }) => (
-                    <NotesTable
-                      notes={field.value}
-                      setNotes={setFieldValue}
-                      isDisabled={!editing}
-                    />
-                  )}
+                  {({ field }) => <NotesTable notes={field.value} setNotes={setFieldValue} isDisabled={!editing} />}
                 </Field>
               </TabPanel>
             </TabPanels>
           </Tabs>
           <Flex justifyContent="center" alignItems="center" maxW="100%" mt="25px" mb={6} px={4}>
             <Box w="100%">
-              <Link
-                href={`${secUrl}${requirements?.passwordPolicy}`}
-                isExternal
-                textColor={textColor}
-                pb={2}
-              >
+              <Link href={`${secUrl}${requirements?.passwordPolicy}`} isExternal textColor={textColor} pb={2}>
                 {t('login.password_policy')}
                 <ExternalLinkIcon mx="2px" />
               </Link>
