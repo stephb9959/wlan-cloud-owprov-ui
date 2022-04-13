@@ -171,6 +171,7 @@
 		"default": "Default",
 		"description": "Description",
 		"details": "Details",
+		"device_details": "Device Details",
 		"discard_changes": "Discard Changes?",
 		"disconnected": "Disconnected",
 		"download": "Download",
@@ -190,6 +191,7 @@
 		"go_to_map": "Go to Map",
 		"hide": "Hide",
 		"hourly": "Hourly",
+		"identification": "Identification",
 		"lifetime": "Lifetime",
 		"logout": "Logout",
 		"main": "Main",
@@ -361,6 +363,7 @@
 		"invalid_serial_number": "Invalid Serial Number (needs to be 12 HEX chars)",
 		"new_devices": "new devices",
 		"not_connected": "Not Connected",
+		"one": "Device",
 		"reassign_already_owned": "Reassign devices which already exist and are owned by another entity/venue/subscriber?",
 		"sanity": "Sanity",
 		"start_import": "Start Device Importation",
@@ -548,6 +551,7 @@
 		"other": "Service Classes"
 	},
 	"subscribers": {
+		"billing_contact_info": "Billing and Contact Details",
 		"claim_device_explanation": "To claim devices you can use the table below. If a device was already claimed by a user, you will need to go to to their details and unassign it before claiming it.",
 		"devices_claimed_one": "{{count}} Device Claimed",
 		"devices_claimed_other": "{{count}} Devices Claimed",
@@ -556,6 +560,7 @@
 		"error_claiming": "Error claiming: {{serials}}",
 		"error_removing_claim": "Error removing claim(s) on: {{serials}}",
 		"one": "Subscriber",
+		"other": "Subscribers",
 		"title": "Subscribers"
 	},
 	"system": {

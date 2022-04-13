@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
-import { Box, Center, Heading, Spacer, Spinner, useBoolean, useToast } from '@chakra-ui/react';
+import { Box, Center, Heading, Spacer, Spinner, useBoolean } from '@chakra-ui/react';
 import CardBody from 'components/Card/CardBody';
 import Card from 'components/Card';
 import CardHeader from 'components/Card/CardHeader';
@@ -10,6 +9,7 @@ import ToggleEditButton from 'components/Buttons/ToggleEditButton';
 import SaveButton from 'components/Buttons/SaveButton';
 import LoadingOverlay from 'components/LoadingOverlay';
 import { useGetSubscriber } from 'hooks/Network/Subscribers';
+import useFormRef from 'hooks/useFormRef';
 import EditSubscriberForm from './Form';
 import DeleteVenuePopover from './DeleteVenuePopover';
 
@@ -18,25 +18,9 @@ const propTypes = {
 };
 
 const SubscriberCard = ({ id }) => {
-  const { t } = useTranslation();
-  const toast = useToast();
   const [editing, setEditing] = useBoolean();
-  const { data: subscriber, refetch, isFetching } = useGetSubscriber({ t, toast, id });
-  const [form, setForm] = useState({});
-  const formRef = useCallback(
-    (node) => {
-      if (
-        node !== null &&
-        (form.submitForm !== node.submitForm ||
-          form.isSubmitting !== node.isSubmitting ||
-          form.isValid !== node.isValid ||
-          form.dirty !== node.dirty)
-      ) {
-        setForm(node);
-      }
-    },
-    [form],
-  );
+  const { data: subscriber, refetch, isFetching } = useGetSubscriber({ id });
+  const { form, formRef } = useFormRef();
 
   return (
     <Card mb={4}>

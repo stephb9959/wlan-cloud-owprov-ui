@@ -19,7 +19,7 @@ import * as Yup from 'yup';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { Formik, Field, Form } from 'formik';
 import { useAuth } from 'contexts/AuthProvider';
-import NotesTable from 'components/NotesTable';
+import NotesTable from 'components/CustomFields/NotesTable';
 import StringField from 'components/FormFields/StringField';
 import SelectField from 'components/FormFields/SelectField';
 import { RequirementsShape } from 'constants/propShapes';
@@ -211,7 +211,12 @@ const UpdateUserForm = ({
           </Tabs>
           <Flex justifyContent="center" alignItems="center" maxW="100%" mt="25px" mb={6} px={4}>
             <Box w="100%">
-              <Link href={`${secUrl}${requirements?.passwordPolicy}`} isExternal textColor={textColor} pb={2}>
+              <Link
+                href={`${secUrl.split('/api/v1')[0]}${requirements?.passwordPolicy}`}
+                isExternal
+                textColor={textColor}
+                pb={2}
+              >
                 {t('login.password_policy')}
                 <ExternalLinkIcon mx="2px" />
               </Link>

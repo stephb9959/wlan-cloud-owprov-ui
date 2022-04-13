@@ -1,5 +1,6 @@
 import phoneNumberTest from 'utils/phoneNumber';
 import * as Yup from 'yup';
+import { testRegex } from './formTests';
 
 // User Schemas
 export const CreateUserSchema = Yup.object().shape({
@@ -238,23 +239,16 @@ export const UpdateTagSchema = (t) =>
   });
 
 // Subscriber Schema
-export const CreateSubscriberSchema = (t) =>
+export const SubscriberSchema = (t, passRegex) =>
   Yup.object().shape({
-    email: Yup.string().email(t('form.invalid_email')).required(t('form.required')),
-    name: Yup.string().required(t('form.required')),
-    owner: Yup.string().required(t('form.required')),
-    description: Yup.string(),
-    currentPassword: Yup.string().required(t('form.required')),
-    note: Yup.string(),
-  });
-export const UpdateSubscriberSchema = (t) =>
-  Yup.object().shape({
-    email: Yup.string().email(t('form.invalid_email')).required(t('form.required')),
-    name: Yup.string().required(t('form.required')),
-    owner: Yup.string().required(t('form.required')),
-    description: Yup.string(),
-    currentPassword: Yup.string(),
-    note: Yup.string(),
+    email: Yup.string().email(t('form.invalid_email')).required(t('form.required')).default(''),
+    name: Yup.string().required(t('form.required')).default(''),
+    description: Yup.string().default(''),
+    currentPassword: Yup.string()
+      .required(t('form.required'))
+      .test('test-password', t('form.invalid_password'), (v) => testRegex(v, passRegex))
+      .default(''),
+    note: Yup.string().default(''),
   });
 
 // Contact Schemas
@@ -340,4 +334,71 @@ export const ServiceClassSchema = (t) =>
     cost: Yup.number(),
     currency: Yup.string(),
     period: Yup.string(),
+  });
+
+// Operator Contact Schemas
+export const OperatorContactSchema = (t) =>
+  Yup.object().shape({
+    name: Yup.string().required(t('form.required')),
+    type: Yup.string().required(t('form.required')),
+    salutation: Yup.string(),
+    title: Yup.string(),
+    firstname: Yup.string().required(t('form.required')),
+    lastname: Yup.string(),
+    initials: Yup.string(),
+    primaryEmail: Yup.string().required(t('form.required')),
+    secondaryEmail: Yup.string(),
+    phones: Yup.array().of(Yup.string()),
+    mobiles: Yup.array().of(Yup.string()),
+    description: Yup.string(),
+    accessPIN: Yup.string(),
+    note: Yup.string(),
+  });
+
+// Location Schemas
+export const OperatorLocationSchema = (t) =>
+  Yup.object()
+    .shape({
+      name: Yup.string().required(t('form.required')),
+      description: Yup.string(),
+      type: Yup.string().required(t('form.required')),
+      addressLineOne: Yup.string().required(t('form.required')),
+      addressLineTwo: Yup.string(),
+      city: Yup.string().required(t('form.required')),
+      state: Yup.string().required(t('form.required')),
+      postal: Yup.string().required(t('form.required')),
+      country: Yup.string().required(t('form.required')),
+      buildingName: Yup.string(),
+      phones: Yup.array().of(Yup.string()),
+      mobiles: Yup.array().of(Yup.string()),
+      geoCode: Yup.string(),
+      note: Yup.string(),
+    })
+    .nullable();
+
+// Subscriber Device Schema
+export const SubscriberDeviceSchema = (t) =>
+  Yup.object().shape({
+    name: Yup.string().required(t('form.required')).default(''),
+    subscriberId: Yup.string().required(t('form.required')).default(''),
+    description: Yup.string().default(''),
+    note: Yup.string().default(''),
+    serialNumber: Yup.string()
+      .required(t('form.required'))
+      .test('test-serial-regex', t('inventory.invalid_serial_number'), (v) => {
+        if (v) {
+          if (v.length !== 12) return false;
+          if (!v.match('^[a-fA-F0-9]+$')) return false;
+        }
+        return true;
+      })
+      .default(''),
+    rrm: Yup.string().required(t('form.required')).default('inherit'),
+    deviceType: Yup.string().required(t('form.required')).default(''),
+    serviceClass: Yup.string().required(t('form.required')).default(''),
+    billingCode: Yup.string().default(''),
+    locale: Yup.string().default(''),
+    location: Yup.string().default(''),
+    contact: Yup.string().default(''),
+    suspended: Yup.bool().default(false),
   });
