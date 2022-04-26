@@ -26,7 +26,6 @@ const CreateSubscriberForm = ({ isOpen, onClose, refresh, formRef, operatorId })
   const { onSuccess, onError } = useMutationResult({
     objName: t('subscribers.one'),
     operationType: 'create',
-    refresh,
     onClose,
   });
 
@@ -40,18 +39,20 @@ const CreateSubscriberForm = ({ isOpen, onClose, refresh, formRef, operatorId })
     <Formik
       innerRef={formRef}
       key={formKey}
-      initialValues={SubscriberSchema(t).cast()}
-      validationSchema={SubscriberSchema(t, passwordPattern)}
+      initialValues={SubscriberSchema(t, { needPassword: true }).cast()}
+      validationSchema={SubscriberSchema(t, { passRegex: passwordPattern })}
       onSubmit={(data, { setSubmitting, resetForm }) =>
         create.mutateAsync(
           {
             ...data,
-            operatorId,
+            userRole: 'subscriber',
+            owner: operatorId,
             notes: data.note.length > 0 ? [{ note: data.note }] : undefined,
           },
           {
             onSuccess: () => {
-              onSuccess(setSubmitting, resetForm);
+              onSuccess({ setSubmitting, resetForm });
+              refresh();
             },
             onError: (e) => {
               onError(e, { resetForm });

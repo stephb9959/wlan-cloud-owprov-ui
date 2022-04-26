@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { v4 as uuid } from 'uuid';
-import { Box } from '@chakra-ui/react';
 import useRefreshId from 'hooks/useRefreshId';
 import useObjectModal from 'hooks/useObjectModal';
+import { Box } from '@chakra-ui/react';
 import SubscriberDeviceTable from 'components/Tables/SubscriberDeviceTable';
-import EditOperatorLocationModal from 'components/Tables/OperatorLocationTable/EditModal';
-import CreateSubscriberDeviceModal from 'components/Tables/SubscriberDeviceTable/CreateModal';
+import EditSubscriberDeviceModal from 'components/Modals/SubscriberDevice/EditModal';
+import SubscriberDeviceSearch from 'components/SearchBars/SubscriberDeviceSearch';
 import Actions from './Actions';
 
 const propTypes = {
@@ -15,7 +15,7 @@ const propTypes = {
 
 const OperatorDevicesTab = ({ operatorId }) => {
   const { refreshId, refresh } = useRefreshId();
-  const { obj: location, openModal, isOpen, onClose } = useObjectModal();
+  const { obj: subscriberDevice, openModal, isOpen, onClose } = useObjectModal();
   const actions = useCallback(
     (cell) => <Actions key={uuid()} cell={cell.row} refreshTable={refresh} openEdit={openModal} />,
     [openModal, refreshId],
@@ -23,11 +23,17 @@ const OperatorDevicesTab = ({ operatorId }) => {
 
   return (
     <>
-      <Box textAlign="right" mb={2}>
-        <CreateSubscriberDeviceModal refresh={refresh} operatorId={operatorId} />
+      <Box w="250px">
+        <SubscriberDeviceSearch operatorId={operatorId} onClick={openModal} />
       </Box>
-      <SubscriberDeviceTable operatorId={operatorId} actions={actions} refreshId={refreshId} />
-      <EditOperatorLocationModal isOpen={isOpen} onClose={onClose} location={location} refresh={refresh} />
+      <SubscriberDeviceTable operatorId={operatorId} actions={actions} refreshId={refreshId} minHeight="270px" />
+      <EditSubscriberDeviceModal
+        isOpen={isOpen}
+        onClose={onClose}
+        subscriberDevice={subscriberDevice}
+        refresh={refresh}
+        operatorId={operatorId}
+      />
     </>
   );
 };

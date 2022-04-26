@@ -5,11 +5,11 @@ import { AddIcon } from '@chakra-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
 import { axiosSec } from 'utils/axiosInstances';
-import ConfirmCloseAlert from 'components/ConfirmCloseAlert';
+import ConfirmCloseAlert from 'components/Modals/Actions/ConfirmCloseAlert';
 import { useAuth } from 'contexts/AuthProvider';
 import SaveButton from 'components/Buttons/SaveButton';
 import CloseButton from 'components/Buttons/CloseButton';
-import ModalHeader from 'components/ModalHeader';
+import ModalHeader from 'components/Modals/ModalHeader';
 import useFormRef from 'hooks/useFormRef';
 import CreateUserForm from './Form';
 
@@ -34,7 +34,7 @@ const CreateUserModal = ({ requirements, refreshUsers }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: showConfirm, onOpen: openConfirm, onClose: closeConfirm } = useDisclosure();
   const { form, formRef } = useFormRef();
-  const createUser = useMutation((newUser) => axiosSec.post('user/0', newUser));
+  const createUser = useMutation((newUser) => axiosSec.post('user/0?email_verification=true', newUser));
 
   const closeModal = () => (form.dirty ? openConfirm() : onClose());
 

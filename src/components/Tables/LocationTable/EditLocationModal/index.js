@@ -12,11 +12,11 @@ import {
   useBoolean,
 } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import ConfirmCloseAlert from 'components/ConfirmCloseAlert';
+import ConfirmCloseAlert from 'components/Modals/Actions/ConfirmCloseAlert';
 import SaveButton from 'components/Buttons/SaveButton';
 import EditButton from 'components/Buttons/EditButton';
 import CloseButton from 'components/Buttons/CloseButton';
-import ModalHeader from 'components/ModalHeader';
+import ModalHeader from 'components/Modals/ModalHeader';
 import { LocationShape } from 'constants/propShapes';
 import { useGetLocation } from 'hooks/Network/Locations';
 import useFormRef from 'hooks/useFormRef';

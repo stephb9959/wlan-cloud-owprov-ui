@@ -77,7 +77,7 @@ const InterfaceSsidRadius = ({ isOpen, onClose, refresh, formRef, resource, edit
               toast({
                 id: 'resource-update-success',
                 title: t('common.success'),
-                description: t('crud.success_create_obj', {
+                description: t('crud.success_update_obj', {
                   obj: t('resources.configuration_resource'),
                 }),
                 status: 'success',
@@ -95,7 +95,7 @@ const InterfaceSsidRadius = ({ isOpen, onClose, refresh, formRef, resource, edit
               toast({
                 id: uuid(),
                 title: t('common.error'),
-                description: t('crud.error_create_obj', {
+                description: t('crud.error_update_obj', {
                   obj: t('resources.configuration_resource'),
                   e: e?.response?.data?.ErrorDescription,
                 }),
