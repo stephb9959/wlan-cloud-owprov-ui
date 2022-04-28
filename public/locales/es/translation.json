@@ -471,6 +471,7 @@
 		"invalid_mac_uc": "Valor de UC-MAC no válido, por ejemplo: 00:00:5e:00:53:af",
 		"invalid_password": "Contraseña no válida, consulte la política de contraseñas",
 		"invalid_phone_number": "Numero de telefono invalido",
+		"invalid_phone_numbers": "Uno o más de los números de teléfono no son válidos. Proporciónelos sin símbolos ni espacios, o en este formato: +1(123)123-1234",
 		"key_file_explanation": "Utilice un archivo .pem que comience con \"-----BEGIN PRIVATE KEY-----\" y termine con \"-----END PRIVATE KEY-----\"",
 		"min_max_string": "El valor debe tener una longitud entre {{min}} (inclusive) y {{max}} (inclusive)",
 		"new_email_to_notify": "Nuevo correo electrónico para notificar",
@@ -641,6 +642,7 @@
 		"title": "Usuario"
 	},
 	"users": {
+		"email_validation": "VALIDACIÓN DE CORREO ELECTRÓNICO",
 		"error_fetching": "Error al obtener usuarios: {{e}}",
 		"error_sending_validation": "Error al enviar la validación de correo electrónico: {{e}}",
 		"last_login": "Último acceso",
@@ -653,11 +655,13 @@
 		"reset_password_success": "Correo electrónico de restablecimiento de contraseña enviado con éxito a la dirección de correo electrónico del usuario",
 		"role": "papel",
 		"send_validation": "Enviar validación de correo electrónico",
+		"send_validation_explanation": "¿Desea reenviar el enlace de verificación de correo electrónico?",
 		"stop_suspension": "reactivar",
 		"success_sending_validation": "¡Correo electrónico de validación enviado!",
 		"suspend": "Suspender",
 		"suspended": "Suspendido",
-		"title": "Usuarios"
+		"title": "Usuarios",
+		"waitiing_for_email_verification": "Correo electrónico no verificado"
 	},
 	"venues": {
 		"confirm_remove_contact": "¿Quieres eliminar este contacto de este lugar?",

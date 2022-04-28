@@ -471,6 +471,7 @@
 		"invalid_mac_uc": "Invalid UC-MAC value, for example: 00:00:5e:00:53:af",
 		"invalid_password": "Invalid password, please look at the password policy",
 		"invalid_phone_number": "Invalid Phone Number",
+		"invalid_phone_numbers": "One or more of the phone numbers are invalid. Please provide them without symbols and spaces, or in this format: +1(123)123-1234",
 		"key_file_explanation": "Please use a .pem file that starts with \"-----BEGIN PRIVATE KEY-----\" and ends with \"-----END PRIVATE KEY-----\"",
 		"min_max_string": "Value needs to be of a length between {{min}} (inclusive) and {{max}} (inclusive)",
 		"new_email_to_notify": "New email to notify",
@@ -641,6 +642,7 @@
 		"title": "User"
 	},
 	"users": {
+		"email_validation": "Email Validation",
 		"error_fetching": "Error fetching users: {{e}}",
 		"error_sending_validation": "Error while sending email validation: {{e}}",
 		"last_login": "Last Login",
@@ -653,11 +655,13 @@
 		"reset_password_success": "Successfully sent reset password email to user email address",
 		"role": "Role",
 		"send_validation": "Send Email Validation",
+		"send_validation_explanation": "Do you want to resend the email verification link?",
 		"stop_suspension": "Re-activate",
 		"success_sending_validation": "Validation email sent!",
 		"suspend": "Suspend",
 		"suspended": "Suspended",
-		"title": "Users"
+		"title": "Users",
+		"waitiing_for_email_verification": "Email Not Verified"
 	},
 	"venues": {
 		"confirm_remove_contact": "Do you want to remove this contact from this venue?",
