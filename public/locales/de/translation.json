@@ -471,6 +471,7 @@
 		"invalid_mac_uc": "Ungültiger UC-MAC-Wert, zum Beispiel: 00:00:5e:00:53:af",
 		"invalid_password": "Ungültiges Passwort, bitte sehen Sie sich die Passwortrichtlinie an",
 		"invalid_phone_number": "Ungültige Telefonnummer",
+		"invalid_phone_numbers": "Mindestens eine der Telefonnummern ist ungültig. Bitte geben Sie sie ohne Symbole und Leerzeichen oder in diesem Format an: +1(123)123-1234",
 		"key_file_explanation": "Bitte verwenden Sie eine .pem-Datei, die mit „-----BEGIN PRIVATE KEY-----“ beginnt und mit „-----END PRIVATE KEY-----“ endet.",
 		"min_max_string": "Der Wert muss eine Länge zwischen {{min}} (einschließlich) und {{max}} (einschließlich) haben.",
 		"new_email_to_notify": "Neue E-Mail zur Benachrichtigung",
@@ -641,6 +642,8 @@
 		"title": "Nutzer"
 	},
 	"users": {
+		"change_password": "Kennwort ändern",
+		"email_validation": "E-MAIL-VALIDIERUNG",
 		"error_fetching": "Fehler beim Abrufen der Nutzer: {{e}}",
 		"error_sending_validation": "Fehler beim Senden der E-Mail-Validierung: {{e}}",
 		"last_login": "Letzte Anmeldung",
@@ -653,11 +656,13 @@
 		"reset_password_success": "Die E-Mail zum Zurücksetzen des Passworts wurde erfolgreich an die E-Mail-Adresse des Benutzers gesendet",
 		"role": "Rolle",
 		"send_validation": "E-Mail-Validierung senden",
+		"send_validation_explanation": "Möchten Sie den E-Mail-Bestätigungslink erneut senden?",
 		"stop_suspension": "Reaktivieren",
 		"success_sending_validation": "Bestätigungs-E-Mail gesendet!",
 		"suspend": "Aussetzen",
 		"suspended": "Suspendiert",
-		"title": "Benutzer"
+		"title": "Benutzer",
+		"waitiing_for_email_verification": "E-Mail nicht verifiziert"
 	},
 	"venues": {
 		"confirm_remove_contact": "Möchten Sie diesen Kontakt von diesem Veranstaltungsort entfernen?",
